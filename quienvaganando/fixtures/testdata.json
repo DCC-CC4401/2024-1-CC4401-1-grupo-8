@@ -1,0 +1,242 @@
+[
+{
+    "model": "quienvaganando.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$260000$stmBpmX4Bt8Za71NHiEK6X$w+KWSIyoe4j0HYqGjlFEDxN8FKvmNJkthhvEIjx7pkk=",
+        "last_login": "2024-05-03T20:18:10.942Z",
+        "is_superuser": true,
+        "username": "admin",
+        "first_name": "",
+        "last_name": "",
+        "email": "admin@admin.cl",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2024-04-25T20:54:07.781Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "quienvaganando.user",
+    "pk": 3,
+    "fields": {
+        "password": "pbkdf2_sha256$260000$NDEmrJ3keYlS96DPZ1bw49$NQ2jHks94sfYfFLcv2Cf/1oCe5qfgDxDLitPUKjr8/k=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "test",
+        "first_name": "",
+        "last_name": "",
+        "email": "test@user.cl",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2024-05-08T18:33:42Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "quienvaganando.torneo",
+    "pk": 1,
+    "fields": {
+        "uuid": "9ad6aadf-946e-477c-9dc9-9100ee89afc3",
+        "nombre": "The Monkey 2024",
+        "owner": 1
+    }
+},
+{
+    "model": "quienvaganando.torneo",
+    "pk": 2,
+    "fields": {
+        "uuid": "2b4b69ca-6886-410b-8826-52a7b07635f9",
+        "nombre": "Otro Torneo",
+        "owner": 3
+    }
+},
+{
+    "model": "quienvaganando.evento",
+    "pk": 1,
+    "fields": {
+        "torneo": 1,
+        "nombre": "Valorant",
+        "descripcion": "valorant 5v5 icebox"
+    }
+},
+{
+    "model": "quienvaganando.evento",
+    "pk": 2,
+    "fields": {
+        "torneo": 1,
+        "nombre": "Baby Fútbol Masculino",
+        "descripcion": "fulvo"
+    }
+},
+{
+    "model": "quienvaganando.evento",
+    "pk": 3,
+    "fields": {
+        "torneo": 1,
+        "nombre": "Baby Fútbol Femenino",
+        "descripcion": "fulvo"
+    }
+},
+{
+    "model": "quienvaganando.participante",
+    "pk": 1,
+    "fields": {
+        "torneo": 1,
+        "nombre": "DCC"
+    }
+},
+{
+    "model": "quienvaganando.participante",
+    "pk": 2,
+    "fields": {
+        "torneo": 1,
+        "nombre": "Industrias"
+    }
+},
+{
+    "model": "quienvaganando.participante",
+    "pk": 3,
+    "fields": {
+        "torneo": 1,
+        "nombre": "DFI"
+    }
+},
+{
+    "model": "quienvaganando.participante",
+    "pk": 4,
+    "fields": {
+        "torneo": 1,
+        "nombre": "DIM"
+    }
+},
+{
+    "model": "quienvaganando.participante",
+    "pk": 5,
+    "fields": {
+        "torneo": 1,
+        "nombre": "Geología"
+    }
+},
+{
+    "model": "quienvaganando.posicion",
+    "pk": 1,
+    "fields": {
+        "evento": 1,
+        "participante": 1,
+        "posicion": 1,
+        "puntaje": 5000
+    }
+},
+{
+    "model": "quienvaganando.posicion",
+    "pk": 2,
+    "fields": {
+        "evento": 1,
+        "participante": 2,
+        "posicion": 3,
+        "puntaje": 10
+    }
+},
+{
+    "model": "quienvaganando.posicion",
+    "pk": 3,
+    "fields": {
+        "evento": 1,
+        "participante": 3,
+        "posicion": 2,
+        "puntaje": 500
+    }
+},
+{
+    "model": "quienvaganando.posicion",
+    "pk": 4,
+    "fields": {
+        "evento": 1,
+        "participante": 4,
+        "posicion": 4,
+        "puntaje": 1
+    }
+},
+{
+    "model": "quienvaganando.posicion",
+    "pk": 5,
+    "fields": {
+        "evento": 2,
+        "participante": 1,
+        "posicion": 1,
+        "puntaje": 2500
+    }
+},
+{
+    "model": "quienvaganando.posicion",
+    "pk": 6,
+    "fields": {
+        "evento": 2,
+        "participante": 2,
+        "posicion": 2,
+        "puntaje": 750
+    }
+},
+{
+    "model": "quienvaganando.posicion",
+    "pk": 7,
+    "fields": {
+        "evento": 2,
+        "participante": 4,
+        "posicion": 3,
+        "puntaje": 500
+    }
+},
+{
+    "model": "quienvaganando.posicion",
+    "pk": 8,
+    "fields": {
+        "evento": 3,
+        "participante": 3,
+        "posicion": 1,
+        "puntaje": 3000
+    }
+},
+{
+    "model": "quienvaganando.posicion",
+    "pk": 9,
+    "fields": {
+        "evento": 3,
+        "participante": 2,
+        "posicion": 2,
+        "puntaje": 2000
+    }
+},
+{
+    "model": "quienvaganando.posicion",
+    "pk": 10,
+    "fields": {
+        "evento": 3,
+        "participante": 1,
+        "posicion": 3,
+        "puntaje": 800
+    }
+},
+{
+    "model": "quienvaganando.posicion",
+    "pk": 11,
+    "fields": {
+        "evento": 3,
+        "participante": 5,
+        "posicion": 4,
+        "puntaje": 200
+    }
+},
+{
+    "model": "quienvaganando.partido",
+    "pk": 1,
+    "fields": {
+        "equipo_a": 1,
+        "equipo_b": 2,
+        "evento": 1
+    }
+}
+]

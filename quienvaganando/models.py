@@ -31,6 +31,8 @@ class Posicion(models.Model):
     participante = models.ForeignKey(Participante, on_delete=models.CASCADE)
     posicion = models.IntegerField(blank=True)  # es necesario?
     puntaje = models.IntegerField(blank=True)
+    
+    def __str__(self): return f"{self.participante.nombre} - {self.evento}"
 
 class Partido(models.Model):
     equipo_a = models.ForeignKey(Participante, on_delete=models.CASCADE, related_name='equipo_a')
