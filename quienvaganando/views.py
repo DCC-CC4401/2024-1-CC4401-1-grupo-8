@@ -20,8 +20,26 @@ def overview_torneo(request, uuid_torneo):
         posiciones = Posicion.objects.filter(evento__torneo=torneo)
         
         print([(p.participante, p.posicion, p.puntaje) for p in posiciones])
+    
 
+       
+        ids_participantes_ordenados = Posicion.objects.order_by('posicion').values_list('participante_id', flat=True)
+        print(ids_participantes_ordenados)
+        nombres_participantes_ordenados = [
+        participante.nombre for participante in Participante.objects.filter(id__in=ids_participantes_ordenados)]
         
+        puntaje_participantes_ordenados=[ 
+            posicion.puntaje for posicion in Posicion.objects.filter(id__in=ids_participantes_ordenados)]
+       
+        print(nombres_participantes_ordenados,"1")
+        nombres_participantes_ordenados = list(nombres_participantes_ordenados)
+
+        print(nombres_participantes_ordenados,"2")
+        print( puntaje_participantes_ordenados)
+        
+
+
+
         resultados = (posiciones.values("participante__nombre")
             .annotate(primeros_lugares=Count(Q(posicion=1)))
             .annotate(segundos_lugares=Count(Q(posicion=2)))
@@ -54,5 +72,7 @@ def overview_torneo(request, uuid_torneo):
             "datos_tabla": [
                 [1, "DCC", 2, 1, 3, 4000],
                 [2, "FIAS", 1, 0, 0, 200]
-            ]
+            ],
+            "posiciones":nombres_participantes_ordenados,
+            "puntajes":puntaje_participantes_ordenados
         })
