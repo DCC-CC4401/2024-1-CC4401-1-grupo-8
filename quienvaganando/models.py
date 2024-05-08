@@ -7,7 +7,7 @@ class User(AbstractUser):
     pass
     
 class Torneo(models.Model):
-    uuid = models.UUIDField(default=uuid.uuid4, editable=True)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     nombre = models.CharField(max_length=250)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     
