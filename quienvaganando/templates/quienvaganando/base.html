@@ -12,6 +12,14 @@
         <div class="header">
             <h1>¿QUIÉN VA GANANDO?</h1>
             <!-- cosas del login -->
+            <hr>
+            {% if user.is_authenticated %}
+            <a href="">Cerrar sesión</a>
+            {% else %}
+            <a href="{% url 'register_user' %}">Registrarse</a>
+            <a href="">Iniciar Sesión</a>
+            {% endif %}
+            <hr>
         </div>
 
         {% block content %}
