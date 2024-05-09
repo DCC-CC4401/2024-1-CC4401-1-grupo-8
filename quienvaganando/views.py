@@ -11,8 +11,8 @@ def overview_torneo(request, uuid_torneo):
     if request.method == "GET":
         
         # obtener lista de eventos del torneo
-        eventos = Evento.objects.filter(torneo=torneo)
-        nombres_eventos = [e.nombre for e in eventos]
+        nombres_eventos = (Evento.objects.filter(torneo=torneo)
+            .values_list("nombre", flat=True).order_by("nombre"))
         
         # obtener todas las posiciones de este torneo
         posiciones = Posicion.objects.filter(evento__torneo=torneo)
