@@ -14,10 +14,10 @@
             <!-- cosas del login -->
             <hr>
             {% if user.is_authenticated %}
-            <a href="">Cerrar sesión</a>
+            <a href="{% url 'logout' %}">Cerrar sesión</a>
             {% else %}
             <a href="{% url 'register_user' %}">Registrarse</a>
-            <a href="">Iniciar Sesión</a>
+            <a href="{% url 'login' %}">Iniciar Sesión</a>
             {% endif %}
             <hr>
         </div>
