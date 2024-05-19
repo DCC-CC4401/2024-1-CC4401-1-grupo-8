@@ -9,10 +9,10 @@ class User(AbstractUser):
 class Torneo(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     nombre = models.CharField(max_length=250)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     
     def __str__(self): return self.nombre
-    
+
 class Evento(models.Model):
     torneo = models.ForeignKey(Torneo, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=250)

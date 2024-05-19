@@ -1,0 +1,14 @@
+{% extends 'quienvaganando/base.html' %}
+
+{% block subtitle %}Nuevo Torneo{% endblock subtitle %}
+
+{% block content %}
+
+<h1>Crear Nuevo Torneo</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Crear Torneo</button>
+</form>
+
+{% endblock content %}

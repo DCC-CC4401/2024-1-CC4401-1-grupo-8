@@ -1,0 +1,16 @@
+{% extends 'quienvaganando/base.html' %}
+
+{% block subtitle %}{{nombre}}{% endblock subtitle %}
+
+{% block content %}
+
+<h1> Registro </h1>
+<form action="" method="post">
+    {% csrf_token %}
+    <div class="card-body">
+    {{ form_register.as_p }}
+    <button class="btn btn-info" name="Register" type="submit">Registrarme</button>
+    </div>
+</form>
+
+{% endblock content %}
