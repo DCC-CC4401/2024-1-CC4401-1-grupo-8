@@ -17,6 +17,7 @@
 
             {% if user.is_authenticated %}
             <!-- <a href="{% url 'logout' %}">Cerrar sesión</a> -->
+            <button class="btn btn-primary" onclick="window.location.href='{% url 'creacion_torneo' %}'">Crear Torneo</button>
             <button class="btn btn-primary" onclick="window.location.href='{% url 'logout' %}'">Cerrar Sesión</button>
 
             {% else %}
