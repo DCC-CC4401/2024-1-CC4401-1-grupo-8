@@ -92,20 +92,24 @@ def nuevo_torneo(request):
                     torneo=torneo
                 )
 
-            return HttpResponseRedirect('/') # CAMBIAR RUTA
+            return HttpResponseRedirect('/')
         else:
             return render(request, 'quienvaganando/torneo.html', {"form": form})
         
 
 
 def overview_torneo(request, uuid_torneo):
+        
     # Se obtiene el objeto torneo con la id uuid_torneo
     torneo = Torneo.objects.get(uuid=uuid_torneo)
     
     if request.method == "GET":
-        # Las siguientes consultas tienen como objetivo entregar la tabla de posiciones global del torneo a la plantilla  overview_torneo.html 
-        # En particular, se clasificaran los participantes por puntaje, donde este puntaje asociado es la suma de los puntajes conseguidos en los eventos particulares del torneo
-        # Se entregaran datos extra utiles como la cantidad de primeros, segundos, o terceros puestos obtenidos por los participantes en los distintos eventos del torneo
+        # Las siguientes consultas tienen como objetivo entregar la tabla de posiciones global del
+        # torneo a la plantilla overview_torneo.html
+        # En particular, se clasificaran los participantes por puntaje, donde este puntaje asociado
+        # es la suma de los puntajes conseguidos en los eventos particulares del torneo
+        # Se entregaran datos extra utiles como la cantidad de primeros, segundos, o terceros
+        # puestos obtenidos por los participantes en los distintos eventos del torneo
         
         # Obtener lista de eventos del torneo
         nombres_eventos = (Evento.objects.filter(torneo=torneo)
@@ -132,6 +136,8 @@ def overview_torneo(request, uuid_torneo):
         datos_tabla = []
         for dict in resultados:
             
+            # Para dejar la posición al principio, luego todos los otros elementos excepto la ID
+            # del participante y la posición (que ya fue agregada)
             l = [dict["rank"]] + list(dict.values())[1:-1]
             datos_tabla.append(l)
         
@@ -147,7 +153,8 @@ def overview_torneo(request, uuid_torneo):
             datos_tabla.append([ultimo_lugar, participante, 0, 0, 0, 0])
         
         
-        # Renderiza la plantilla overview_torneo.html, pasando los datos calculados y obtenidos de las consultas
+        # Renderiza la plantilla overview_torneo.html, pasando los datos calculados y obtenidos de
+        # las consultas
         return render(request, "quienvaganando/overview_torneo.html", {
             "nombre": torneo.nombre,
             "eventos": nombres_eventos,
