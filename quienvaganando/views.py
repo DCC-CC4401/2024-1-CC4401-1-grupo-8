@@ -45,7 +45,7 @@ def logout_user(request):
     return HttpResponseRedirect('/')
 
 def home(request):
-    return render(request, "quienvaganando/home.html")
+    return HttpResponseRedirect('/torneos')
 
 
 def lista_torneos(request):
