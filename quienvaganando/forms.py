@@ -1,5 +1,6 @@
 from django import forms
 from .models import User
+from .models import Torneo
 from django.contrib.auth import authenticate
 from django.forms import PasswordInput
 
@@ -35,3 +36,45 @@ class LoginForm(forms.Form):
         if usuario is None:
             raise forms.ValidationError("¡Nombre de usuario o contraseña incorrecta!")
         return self.cleaned_data
+
+class NuevoTorneoForm(forms.Form):
+    nombre = forms.CharField(label="Nombre del Torneo", max_length=250)
+    participantes = forms.CharField(widget=forms.Textarea(), help_text="Ingrese los nombres de los participantes separados por comas.")
+    eventos = forms.CharField(widget=forms.Textarea(), help_text="Ingrese los nombres de los eventos separados por comas.")
+    descripcion_eventos = forms.CharField(widget=forms.Textarea(), help_text="Ingrese las descripciones de los eventos en el mismo orden, separados por comas.")
+
+    def clean_nombre(self):
+        nombre = self.cleaned_data["nombre"]
+        nombre_comp = nombre.lower()
+        # Comparación case-insensitive
+        if Torneo.objects.filter(nombre__iexact=nombre_comp).exists():
+            raise forms.ValidationError("¡Ya existe un torneo con este nombre!")   
+        return nombre
+    
+    def clean_participantes(self):
+        participantes = self.cleaned_data["participantes"]
+        participantes_list = [p.strip().lower() for p in participantes.split(',') if p.strip()]
+        # ver que no hay repetidos
+        if len(participantes_list) != len(set(participantes_list)):
+            raise forms.ValidationError("Hay participantes repetidos")
+        return participantes_list
+    
+    def clean_eventos(self):
+        eventos = self.cleaned_data["eventos"]
+        eventos_list = [e.strip() for e in eventos.split(',') if e.strip()]
+        return eventos_list
+    
+    def clean_descripcion_eventos(self):
+        descripcion_eventos = self.cleaned_data["descripcion_eventos"]
+        descripcion_list = [d.strip() for d in descripcion_eventos.split(',') if d.strip()]
+        return descripcion_list
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        eventos = cleaned_data.get("eventos")
+        descripcion_eventos = cleaned_data.get("descripcion_eventos")
+        # Ver que la cantidad de eventos y descripcones de eventos son iguales
+        if eventos and descripcion_eventos:
+            if len(eventos) != len(descripcion_eventos):
+                raise forms.ValidationError("El número de eventos y descripciones debe coincidir.")
+        return cleaned_data
