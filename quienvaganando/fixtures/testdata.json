@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
         "password": "pbkdf2_sha256$260000$stmBpmX4Bt8Za71NHiEK6X$w+KWSIyoe4j0HYqGjlFEDxN8FKvmNJkthhvEIjx7pkk=",
-        "last_login": "2024-05-03T20:18:10.942Z",
+        "last_login": "2024-05-19T23:43:42.118Z",
         "is_superuser": true,
         "username": "admin",
         "first_name": "",
@@ -19,18 +19,18 @@
 },
 {
     "model": "quienvaganando.user",
-    "pk": 3,
+    "pk": 5,
     "fields": {
-        "password": "pbkdf2_sha256$260000$NDEmrJ3keYlS96DPZ1bw49$NQ2jHks94sfYfFLcv2Cf/1oCe5qfgDxDLitPUKjr8/k=",
-        "last_login": null,
+        "password": "pbkdf2_sha256$260000$h2hHixmnMuhi9CDxz747NT$h9OWVTPpIClOWGVzp9fMtc0lLlBY/9ouDvuAk9aqwMQ=",
+        "last_login": "2024-05-19T23:43:17.068Z",
         "is_superuser": false,
-        "username": "test",
+        "username": "testuser",
         "first_name": "",
         "last_name": "",
-        "email": "test@user.cl",
-        "is_staff": true,
+        "email": "",
+        "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-05-08T18:33:42Z",
+        "date_joined": "2024-05-19T23:35:43.663Z",
         "groups": [],
         "user_permissions": []
     }
@@ -41,16 +41,7 @@
     "fields": {
         "uuid": "9ad6aadf-946e-477c-9dc9-9100ee89afc3",
         "nombre": "The Monkey 2024",
-        "owner": 1
-    }
-},
-{
-    "model": "quienvaganando.torneo",
-    "pk": 2,
-    "fields": {
-        "uuid": "2b4b69ca-6886-410b-8826-52a7b07635f9",
-        "nombre": "Otro Torneo",
-        "owner": 3
+        "owner": 5
     }
 },
 {
@@ -118,6 +109,14 @@
     "fields": {
         "torneo": 1,
         "nombre": "Geología"
+    }
+},
+{
+    "model": "quienvaganando.participante",
+    "pk": 6,
+    "fields": {
+        "torneo": 1,
+        "nombre": "Eléctrica"
     }
 },
 {
