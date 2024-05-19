@@ -4,34 +4,50 @@
 
 {% block content %}
 
-<h2>EL NOMBRE DEL TORNEO ES {{nombre}}!!</h2>
+<h2 style="font-family: 'DM Sans', sans-serif;" > {{nombre}}!!</h2>
 
+<body>
 
+  <div class="row justify-content-md-center mt-3 mb-auto"> 
+     
+    <h4 class="text-danger fs-3 ms-4 "  style="font-family: 'DM Sans', sans-serif;" > Tabla de puntajes</h4>
 
-<table class="table">
-    <thead>
-      <tr>
-        {% for head in header_tabla %}
-        <th scope="col">{{head}}</th>
-        {% endfor %}
-      </tr>
-    </thead>
-    <tbody>
-      {% for row in datos_tabla %}
-      <tr>
-        {% for elem in row %}
-        <td>{{elem}}</td>
-        {% endfor %}
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-
-  EVENTOS:
-  {% for evento in eventos %}
-  {{evento}}
-  {% endfor %}
-
+  </div>
+  <div class="container-fluid">
+    <div class="row mt-auto  ">
+      <!-- Columna para la tabla -->
+      <div class="col-7" style="font-family: 'DM Sans', sans-serif;">
+        
+        <table class="table ">
+          <thead>
+            <tr class="table-danger">
+              {% for head in header_tabla %}
+              <th scope="col" >{{head}}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in datos_tabla %}
+            <tr>
+              {% for elem in row %}
+              <td class="fs-5" >{{elem}}</td>
+              {% endfor %}
+            </tr> 
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="col-5 "  style="font-family: 'DM Sans', sans-serif;">
+        <h4 class="fw-bold  text-danger fs-2"  >EVENTOS:</h4>
+        <ul>
+          {% for evento in eventos %}
+          <li class="fw-bold eventos" >{{evento}}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</body>
 
 
 {% endblock content %}
