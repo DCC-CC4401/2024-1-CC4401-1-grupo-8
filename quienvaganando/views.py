@@ -16,9 +16,12 @@ def register_user(request):
         if form_register.is_valid():
             username = form_register.cleaned_data["username"]
             contraseña = form_register.cleaned_data["contraseña"]
-            user = User.objects.create_user(username=username, password=contraseña)
-        #Redireccionar la página /tareas
+            User.objects.create_user(username=username, password=contraseña)
+            login_user(request)
+            #Redireccionar al home
             return HttpResponseRedirect('/') # CAMBIAR RUTA
+        else:
+            return render(request, 'quienvaganando/register_user.html', {"form_register": form_register})
     
 def login_user(request):
     if request.method == 'GET':
@@ -30,9 +33,8 @@ def login_user(request):
             username = form_login.cleaned_data["username"]
             contraseña = form_login.cleaned_data["contraseña"]
             usuario = authenticate(username=username,password=contraseña)
-            if usuario is not None:
-                login(request,usuario)
-                return render(request, 'quienvaganando/login.html', {"form_login": form_login})
+            # si usuario is None, el formulario no es valido
+            login(request,usuario)
         else:
             return render(request, 'quienvaganando/login.html', {"form_login": form_login})
         
