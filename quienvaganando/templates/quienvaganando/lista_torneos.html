@@ -1,0 +1,18 @@
+{% extends 'quienvaganando/base.html' %}
+
+{% block subtitle %}{{nombre}}{% endblock subtitle %}
+
+{% block content %}
+
+<h1> Lista de Torneos </h1>
+
+<ul class="list-group">
+    {% for torneo in mis_torneos %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ torneo.nombre }}
+        <button type="button" class="btn btn-primary" onclick="window.location.href='{% url 'overview_torneo' torneo.uuid %}'">ver</button>
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock content %}

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from quienvaganando.models import User
+from quienvaganando.models import User, Torneo
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from quienvaganando.forms import *
@@ -35,9 +35,9 @@ def login_user(request):
             usuario = authenticate(username=username,password=contraseña)
             # si usuario is None, el formulario no es valido
             login(request,usuario)
+            return HttpResponseRedirect('/')
         else:
             return render(request, 'quienvaganando/login.html', {"form_login": form_login})
-        
  
 def logout_user(request):
     logout(request)
@@ -45,3 +45,11 @@ def logout_user(request):
 
 def home(request):
     return render(request, "quienvaganando/home.html")
+
+
+def lista_torneos(request):
+    if request.user.is_authenticated:
+        mis_torneos = Torneo.objects.filter(owner=request.user)
+    else:
+        mis_torneos = Torneo.objects.filter(owner=None)
+    return render(request, 'quienvaganando/lista_torneos.html', {"mis_torneos": mis_torneos})
