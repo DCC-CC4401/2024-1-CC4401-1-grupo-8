@@ -57,11 +57,15 @@ class NuevoTorneoForm(forms.Form):
         # ver que no hay repetidos
         if len(participantes_list) != len(set(participantes_list)):
             raise forms.ValidationError("Hay participantes repetidos")
-        return participantes_list
+        participantes_comp = list(map(lambda nombre: nombre.lower(), participantes))
+        return participantes_comp
     
     def clean_eventos(self):
         eventos = self.cleaned_data["eventos"]
         eventos_list = [e.strip() for e in eventos.split(',') if e.strip()]
+        # ver que no hay repetidos
+        if len(eventos_list) != len(set(eventos_list)):
+            raise forms.ValidationError("Hay eventos repetidos")
         return eventos_list
     
     def clean_descripcion_eventos(self):
