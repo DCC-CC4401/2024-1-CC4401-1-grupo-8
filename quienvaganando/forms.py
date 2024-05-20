@@ -20,7 +20,7 @@ class RegisterForm(forms.Form):
     def clean_contraseña(self):
         contraseña = self.cleaned_data["contraseña"]
         if len(contraseña) < 8:
-            raise forms.ValidationError("La contraseña debe tener al menos 8 carácterres")
+            raise forms.ValidationError("La contraseña debe tener al menos 8 caracteres")
         return contraseña
 
 class LoginForm(forms.Form):
@@ -53,18 +53,20 @@ class NuevoTorneoForm(forms.Form):
     
     def clean_participantes(self):
         participantes = self.cleaned_data["participantes"]
-        participantes_list = [p.strip().lower() for p in participantes.split(',') if p.strip()]
+        participantes_list = [p.strip() for p in participantes.split(',') if p.strip()]
         # ver que no hay repetidos
-        if len(participantes_list) != len(set(participantes_list)):
+        participantes_comp = list(map(lambda nombre: nombre.lower(), participantes_list))
+        if len(participantes_comp) != len(set(participantes_comp)):
             raise forms.ValidationError("Hay participantes repetidos")
-        participantes_comp = list(map(lambda nombre: nombre.lower(), participantes))
-        return participantes_comp
+        
+        return participantes_list
     
     def clean_eventos(self):
         eventos = self.cleaned_data["eventos"]
         eventos_list = [e.strip() for e in eventos.split(',') if e.strip()]
         # ver que no hay repetidos
-        if len(eventos_list) != len(set(eventos_list)):
+        eventos_comp = list(map(lambda nombre: nombre.lower(), eventos_list))
+        if len(eventos_comp) != len(set(eventos_comp)):
             raise forms.ValidationError("Hay eventos repetidos")
         return eventos_list
     
