@@ -80,7 +80,7 @@ class NuevoTorneoForm(forms.Form):
         eventos = cleaned_data.get("eventos")
         descripcion_eventos = cleaned_data.get("descripcion_eventos")
         # Ver que la cantidad de eventos y descripcones de eventos son iguales
-        if eventos and descripcion_eventos:
+        if eventos is not None and descripcion_eventos is not None:
             if len(eventos) != len(descripcion_eventos):
                 raise forms.ValidationError("El número de eventos y descripciones debe coincidir.")
         return cleaned_data
