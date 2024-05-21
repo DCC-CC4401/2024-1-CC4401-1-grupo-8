@@ -10,51 +10,65 @@ from django.db.models.functions import Rank
 
 
 def register_user(request):
-    if request.method == 'GET': #Si estamos cargando la página
-        form_register = RegisterForm()
-        return render(request, "quienvaganando/register_user.html", {"form_register" : form_register}) #Mostrar el template
+    if request.method == 'GET': 
+        # Si estamos cargando la página, mostrar el formulario de registro
+        form_register = RegisterForm() 
+        # Mostrar el template
+        return render(request, "quienvaganando/register_user.html", {"form_register" : form_register}) 
 
     elif request.method == 'POST':
+        # Recibir los datos en el formulario
         form_register = RegisterForm(request.POST)
-        #Crear el nuevo usuario
+        # Validar y crear el nuevo usuario
         if form_register.is_valid():
             username = form_register.cleaned_data["username"]
             contraseña = form_register.cleaned_data["contraseña"]
             User.objects.create_user(username=username, password=contraseña)
             login_user(request)
-            #Redireccionar al home
+            # Redireccionar al home
             return HttpResponseRedirect('/') # CAMBIAR RUTA
         else:
+            # Si no pasa la validación, se devuelve el formulario con los datos
             return render(request, 'quienvaganando/register_user.html', {"form_register": form_register})
     
 def login_user(request):
     if request.method == 'GET':
+        # Si estamos cargando la página, mostrar el formulario de login
         form_login = LoginForm()
+        # Mostrar el template
         return render(request,"quienvaganando/login.html", {"form_login": form_login})
     elif request.method == 'POST':
+        # Recibir los datos en el formulario
         form_login = LoginForm(request.POST)
         if form_login.is_valid():
             username = form_login.cleaned_data["username"]
             contraseña = form_login.cleaned_data["contraseña"]
+            # La autentifiación del usuario se hacer para obtener el usuario,
+            # pero sino es válido, se arroja un error en forms.LoginForm
             usuario = authenticate(username=username,password=contraseña)
-            # si usuario is None, el formulario no es valido
             login(request,usuario)
+            # Si el formulario es válido, retornamos al home
             return HttpResponseRedirect('/')
         else:
+            # Si el usuario no es valido, se devuelve el formulario con los datos
             return render(request, 'quienvaganando/login.html', {"form_login": form_login})
  
 def logout_user(request):
     logout(request)
+    # Se cierra sesión y se envía al home
     return HttpResponseRedirect('/')
 
 def home(request):
+    # La ruta '/' debe redireccionar a '/torneos'
     return HttpResponseRedirect('/torneos')
 
 
 def lista_torneos(request):
     if request.user.is_authenticated:
+        # El usuario verá los torneos que ha creado
         mis_torneos = Torneo.objects.filter(owner=request.user)
     else:
+        # Si no está autentificado, verá torneos sin dueño
         mis_torneos = Torneo.objects.filter(owner=None)
     return render(request, 'quienvaganando/lista_torneos.html', {"mis_torneos": mis_torneos})
 

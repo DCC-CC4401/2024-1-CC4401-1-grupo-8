@@ -19,6 +19,7 @@ class RegisterForm(forms.Form):
 
     def clean_contraseña(self):
         contraseña = self.cleaned_data["contraseña"]
+        # Validar largo de contraseñas
         if len(contraseña) < 8:
             raise forms.ValidationError("La contraseña debe tener al menos 8 caracteres")
         return contraseña
@@ -30,9 +31,11 @@ class LoginForm(forms.Form):
     def clean(self):
         username = self.cleaned_data["username"]
         contraseña = self.cleaned_data["contraseña"]
+        # Validar que no hay repetidos
         if not User.objects.filter(username=username).exists():
             raise forms.ValidationError("¡El nombre de usuario no existe!")
         usuario = authenticate(username=username, password=contraseña)
+        # Validar que el usuario es correcto
         if usuario is None:
             raise forms.ValidationError("¡Nombre de usuario o contraseña incorrecta!")
         return self.cleaned_data
