@@ -7,7 +7,7 @@ from django.forms import PasswordInput
 
 class RegisterForm(forms.Form):
     username = forms.CharField(label="Nombre de usuario")
-    contraseña = forms.CharField(label="Contraseña", widget=PasswordInput())
+    contraseña = forms.CharField(label="Contraseña", widget=PasswordInput(), help_text="La contraseña debe tener al menos 8 caracteres")
 
     def clean_username(self):
         username = self.cleaned_data["username"]
@@ -39,9 +39,9 @@ class LoginForm(forms.Form):
 
 class NuevoTorneoForm(forms.Form):
     nombre = forms.CharField(label="Nombre del Torneo", max_length=250)
-    participantes = forms.CharField(widget=forms.Textarea(), help_text="Ingrese los nombres de los participantes separados por comas.")
-    eventos = forms.CharField(widget=forms.Textarea(), help_text="Ingrese los nombres de los eventos separados por comas.")
-    descripcion_eventos = forms.CharField(widget=forms.Textarea(), help_text="Ingrese las descripciones de los eventos en el mismo orden, separados por comas.")
+    participantes = forms.CharField(widget=forms.Textarea(attrs={'rows':5}), help_text="Ingrese los nombres de los participantes separados por comas.")
+    eventos = forms.CharField(widget=forms.Textarea(attrs={'rows':5}), help_text="Ingrese los nombres de los eventos separados por comas.")
+    descripcion_eventos = forms.CharField(widget=forms.Textarea(attrs={'rows': 5}), help_text="Ingrese las descripciones de los eventos en el mismo orden, separados por comas.")
 
     def clean_nombre(self):
         nombre = self.cleaned_data["nombre"]

@@ -2,14 +2,17 @@
 
 {% block subtitle %}{{nombre}}{% endblock  %}
 
+{% load crispy_forms_tags %}
 {% block content %}
-<h1> Iniciar Sesión </h1>
+<h1 style="text-align: center;"> Iniciar Sesión </h1>
+<div class="contenedor" style="display:flex; justify-content: center;">
 <form method="post" >
     {% csrf_token %}
     <div class="card-body">
-        {{ form_login.as_p }}
-        <button class="btn btn-info" name="Register" type="submit">Iniciar Sesión</button>
+        {{ form_login|crispy }}
+        <button style="margin-top: 10px;" class="btn btn-info" name="Register" type="submit">Iniciar Sesión</button>
     </div>
 </form>
+</div>
 
 {% endblock content %}

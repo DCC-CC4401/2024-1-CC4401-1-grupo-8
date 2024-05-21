@@ -2,13 +2,16 @@
 
 {% block subtitle %}Nuevo Torneo{% endblock subtitle %}
 
+{% load crispy_forms_tags %}
 {% block content %}
 
-<h1>Crear Nuevo Torneo</h1>
+<h1 style="text-align: center;">Crear Nuevo Torneo</h1>
+<div style="display: flex; justify-content: center;">
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Crear Torneo</button>
-</form>
+    {{ form|crispy }}
+    <button class="btn btn-info" name="Register" type="submit">Crear Torneo</button>
 
+</form>
+</div>
 {% endblock content %}
