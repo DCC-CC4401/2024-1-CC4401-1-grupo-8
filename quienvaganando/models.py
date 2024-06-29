@@ -61,4 +61,12 @@ class Partido(models.Model):
     equipo_b = models.ForeignKey(Participante, on_delete=models.CASCADE, related_name='equipo_b')
     # Relacion entre partido y evento
     evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
-    # faltan los otros atributos de un partido
+    # fecha hora y lugar de un partido
+    fecha = models.DateField(blank=True)
+    hora = models.TimeField(blank=True)
+    lugar = models.CharField(blank=True, max_length=250)
+    resultado_a = models.CharField(blank=True, max_length=250)
+    resultado_b = models.CharField(blank=True, max_length=250)
+    # opcional por si hay más de un participante
+    campo_extra_a = models.CharField(blank=True, max_length=250)
+    campo_extra_b = models.CharField(blank=True, max_length=250)
