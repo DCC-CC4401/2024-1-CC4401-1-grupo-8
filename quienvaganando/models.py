@@ -67,8 +67,8 @@ class Partido(models.Model):
     evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
     
     # fecha hora y lugar de un partido
-    fecha = models.DateField(blank=True)
-    hora = models.TimeField(blank=True)
+    fecha = models.DateField(blank=True, null=True)
+    hora = models.TimeField(blank=True, null=True)
     lugar = models.CharField(blank=True, max_length=250)
     
     resultado_a = models.CharField(blank=True, max_length=250)
