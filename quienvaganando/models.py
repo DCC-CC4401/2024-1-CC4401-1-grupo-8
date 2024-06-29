@@ -17,6 +17,9 @@ class Torneo(models.Model):
     nombre = models.CharField(max_length=250)
     # Creador\dueño, esta relacionado con el usuario User
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    # Descripción del torneo
+    descripcion = models.TextField(blank=True)
+    
      # Metodo para representar el objeto torneo como una cadena de texto, en este caso por su nombre
     def __str__(self): return self.nombre
 
