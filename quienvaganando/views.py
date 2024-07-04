@@ -164,7 +164,7 @@ def overview_torneo(request, uuid_torneo):
         for participante in participantes_vacios:
             datos_tabla.append([ultimo_lugar, participante, 0, 0, 0, 0])
         
-        es_dueno = (request.user.is_authenticated & request.user == torneo.owner)
+        es_dueno = (request.user.is_authenticated and request.user == torneo.owner)
 
         # Renderiza la plantilla overview_torneo.html, pasando los datos calculados y obtenidos de
         # las consultas
