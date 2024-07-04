@@ -173,3 +173,25 @@ def overview_torneo(request, uuid_torneo):
             "header_tabla": ["Pos.", "Equipo", "1°", "2°", "3°", "Ptje."],
             "datos_tabla": datos_tabla
         })
+
+def editar_torneo(request, uuid_torneo):
+    
+    # Se obtiene el objeto torneo con la id uuid_torneo
+    torneo = Torneo.objects.get(uuid=uuid_torneo)
+    if request.method == "GET":
+        form = EditarTorneoForm(instance=torneo)
+        return render(request,  "quienvaganando/editar_torneo.html", {"form": form})
+    if request.method == "POST":    
+        form = EditarTorneoForm(request.POST, instance=torneo)
+        # Se revisa la validez del form.
+        # En caso de que lo sea, se obtiene el nuevo nombre y descripción para el torneo
+        # Se reemplazan los antiguos nombre y descripción
+        # Se guarda la información
+        if form.is_valid():
+            nuevo_nombre = form.cleaned_data['nombre']
+            nueva_descripcion = form.cleaned_data['descripcion']
+            torneo.nombre = nuevo_nombre
+            torneo.descripcion = nueva_descripcion
+            torneo.save()
+            return HttpResponseRedirect(f"/torneos/{uuid_torneo}")
+        return render(request,  "quienvaganando/editar_torneo.html", {"form": form})
