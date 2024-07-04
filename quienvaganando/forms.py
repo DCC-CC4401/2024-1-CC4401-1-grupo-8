@@ -4,6 +4,10 @@ from .models import Torneo
 from django.contrib.auth import authenticate
 from django.forms import PasswordInput
 
+def check_nombre_torneo(nombre):
+    nombre_comp = nombre.lower()
+    # Comparación case-insensitive
+    return Torneo.objects.filter(nombre__iexact=nombre_comp).exists()
 
 class RegisterForm(forms.Form):
     username = forms.CharField(label="Nombre de usuario")
@@ -48,9 +52,7 @@ class NuevoTorneoForm(forms.Form):
 
     def clean_nombre(self):
         nombre = self.cleaned_data["nombre"]
-        nombre_comp = nombre.lower()
-        # Comparación case-insensitive
-        if Torneo.objects.filter(nombre__iexact=nombre_comp).exists():
+        if check_nombre_torneo(nombre):
             raise forms.ValidationError("¡Ya existe un torneo con este nombre!")   
         return nombre
     
@@ -87,3 +89,13 @@ class NuevoTorneoForm(forms.Form):
             if len(eventos) != len(descripcion_eventos):
                 raise forms.ValidationError("El número de eventos y descripciones debe coincidir.")
         return cleaned_data
+    
+class EditarTorneoForm(forms.Form):
+    nombre = forms.CharField(label="Nombre del Torneo", max_length=250)
+    descripcion_eventos = forms.CharField(widget=forms.Textarea(attrs={'rows': 5}), help_text="Ingrese las descripciones de los eventos en el mismo orden, separados por comas.", max_length=1000)
+
+    def clean_nombre(self):
+        nombre = self.cleaned_data["nombre"]
+        if check_nombre_torneo(nombre):
+            raise forms.ValidationError("¡Ya existe un torneo con este nombre!")   
+        return nombre
