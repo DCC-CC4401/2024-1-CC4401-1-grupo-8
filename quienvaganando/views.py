@@ -7,8 +7,6 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q, F, Sum, Count, Window
 from django.db.models.functions import Rank
 
-
-
 def register_user(request):
     if request.method == 'GET': 
         # Si estamos cargando la página, mostrar el formulario de registro
