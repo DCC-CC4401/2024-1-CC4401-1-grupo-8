@@ -46,6 +46,13 @@
         </ul>
       </div>
     </div>
+    {% if es_dueño %}
+    </div class ="row mt-3">
+      </div class="col text-center">
+        <a href="{%url 'editar_torneo' torneo_id=torneo.id %}" class="btn btn-primary">Editar Torneo</a>
+      <div> 
+    </div>
+    {% endif %}
   </div>
 </body>
 
