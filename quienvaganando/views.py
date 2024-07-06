@@ -6,6 +6,7 @@ from quienvaganando.forms import *
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, F, Sum, Count, Window
 from django.db.models.functions import Rank
+from django.core.exceptions import PermissionDenied
 
 
 
@@ -180,7 +181,12 @@ def editar_participantes(request, uuid_torneo):
     
     # se obtiene el torneo y sus participantes
     torneo = Torneo.objects.get(uuid=uuid_torneo)
-    participantes = Participante.objects.filter(evento__torneo=torneo)
+    
+    # si el usuario no es dueño, entrega error
+    if not (request.user.is_authenticated and request.user == torneo.owner):
+        raise PermissionDenied
+    
+    participantes = Participante.objects.filter(torneo=torneo)
     nombres_participantes = [p.nombre for p in participantes]
     
     
@@ -188,7 +194,7 @@ def editar_participantes(request, uuid_torneo):
         # diccionario con nombres actuales (para que sean fácilmente editables en el form)
         info_actual = dict(zip(nombres_participantes, nombres_participantes))
         
-        form = EditarParticipantesForm(nombres_participantes, )
+        form = EditarParticipantesForm(nombres_participantes, info_actual)
         return render(request,  "quienvaganando/editar_participantes.html", {"form": form})
     
     if request.method == "POST":    
