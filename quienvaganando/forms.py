@@ -97,3 +97,17 @@ class EditarParticipantesForm(forms.Form):
         
         for p in participantes:
             self.fields[p] = forms.CharField(max_length=250, label=p)
+            
+    def clean(self):
+        cleaned_data = super().clean()
+        participantes = cleaned_data.get("participantes").values()
+        
+        # revisar que no hayan participantes repetidos
+        participantes_comp = [p.lower() for p in participantes]
+        if len(participantes_comp) != len(set(participantes_comp)):
+            raise forms.ValidationError("Hay participantes repetidos")
+        
+        # revisar que no hayan nombres vacíos
+        for p in participantes:
+            if p.strip() == "":
+                raise forms.ValidationError("No pueden haber participantes con nombres vacíos")
