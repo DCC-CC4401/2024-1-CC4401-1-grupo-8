@@ -10,7 +10,8 @@
 <div style="display: flex;">
 <form method="post">
     {% csrf_token %}
-    {{ form|crispy }}
+    {{ form_editar | crispy }}
+    {{ form_eliminar | crispy }}
     <button class="btn btn-info" name="Guardar" type="submit">Guardar Cambios</button>
 
 </form>
