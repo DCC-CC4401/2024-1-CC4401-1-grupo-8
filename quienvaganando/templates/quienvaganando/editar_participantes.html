@@ -6,12 +6,12 @@
 {% block content %}
 
 <h1 style="text-align: center;">Editar Participantes</h1>
-<div style="display: flex; justify-content: center;">
-<h2>Modifica el nombre de los participantes que desees</h2>
+<h3>Modifica el nombre de los participantes que desees</h3>
+<div style="display: flex;">
 <form method="post">
     {% csrf_token %}
     {{ form|crispy }}
-    <button class="btn btn-info" name="Register" type="submit">Guardar Cambios</button>
+    <button class="btn btn-info" name="Guardar" type="submit">Guardar Cambios</button>
 
 </form>
 </div>
