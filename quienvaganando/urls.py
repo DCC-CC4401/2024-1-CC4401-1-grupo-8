@@ -9,4 +9,5 @@ urlpatterns = [
     path('torneos/', views.lista_torneos, name='torneos'),
     path('crear_torneo/', views.nuevo_torneo, name='creacion_torneo'),
     path('torneos/<str:uuid_torneo>/', views.overview_torneo, name='overview_torneo'),
+    path('torneos/<str:uuid_torneo>/agregar_participante', views.agregar_participante, name='agregar_participante'),
 ]
