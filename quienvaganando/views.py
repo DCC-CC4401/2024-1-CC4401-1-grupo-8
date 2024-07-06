@@ -166,15 +166,19 @@ def overview_torneo(request, uuid_torneo):
         ultimo_lugar = len(datos_tabla)+1
         for participante in participantes_vacios:
             datos_tabla.append([ultimo_lugar, participante, 0, 0, 0, 0])
+            
+        # verificar si el usuario es dueño del torneo, para mostrar botones de edición
+        es_dueno = (request.user.is_authenticated and request.user == torneo.owner)
         
         
         # Renderiza la plantilla overview_torneo.html, pasando los datos calculados y obtenidos de
         # las consultas
         return render(request, "quienvaganando/overview_torneo.html", {
-            "nombre": torneo.nombre,
+            "torneo": torneo,
             "eventos": nombres_eventos,
             "header_tabla": ["Pos.", "Equipo", "1°", "2°", "3°", "Ptje."],
-            "datos_tabla": datos_tabla
+            "datos_tabla": datos_tabla,
+            "es_dueno": es_dueno,
         })
         
 def editar_participantes(request, uuid_torneo):
