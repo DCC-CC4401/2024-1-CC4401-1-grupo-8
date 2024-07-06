@@ -196,18 +196,38 @@ def editar_participantes(request, uuid_torneo):
     
     if request.method == "GET":
         # diccionario con nombres actuales (para que sean fácilmente editables en el form)
-        info_actual = dict(zip(nombres_participantes, nombres_participantes))
+        info_actual = dict(zip(
+            ["editar-" + nombre for nombre in nombres_participantes],
+            nombres_participantes
+        ))
         
-        form = EditarParticipantesForm(nombres_participantes, info_actual)
-        return render(request,  "quienvaganando/editar_participantes.html", {"form": form})
+        form_editar = EditarParticipantesForm(nombres_participantes, info_actual, prefix="editar")
+        form_eliminar = EliminarParticipantesForm(torneo, nombres_participantes, prefix="eliminar")
+        return render(request,  "quienvaganando/editar_participantes.html", {
+            "form_editar": form_editar,
+            "form_eliminar": form_eliminar
+        })
     
-    if request.method == "POST":    
-        form = EditarParticipantesForm(nombres_participantes, request.POST)
+    if request.method == "POST":
+        form_editar = EditarParticipantesForm(nombres_participantes, request.POST, prefix="editar")
+        form_eliminar = EliminarParticipantesForm(torneo, nombres_participantes, request.POST, prefix="eliminar")
         
-        # validar form y cambiar nombres de participantes
-        if form.is_valid():
-            for p, nombre in zip(participantes, form.cleaned_data.values()):
+        # validar forms
+        if form_editar.is_valid() and form_eliminar.is_valid():
+            
+            # cambiar nombres de participantes
+            for p, nombre in zip(participantes, form_editar.cleaned_data.values()):
                 p.nombre = nombre
                 p.save()
+            
+            # eliminar participantes seleccionados
+            for p, eliminar in zip(participantes, form_eliminar.cleaned_data.values()):
+                if eliminar:
+                    p.delete()
+                
             return HttpResponseRedirect(f"/torneos/{uuid_torneo}")
-        return render(request,  "quienvaganando/editar_participantes.html", {"form": form})
+        
+        return render(request,  "quienvaganando/editar_participantes.html", {
+            "form_editar": form_editar,
+            "form_eliminar": form_eliminar,
+        })
