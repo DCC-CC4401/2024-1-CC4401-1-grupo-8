@@ -87,3 +87,13 @@ class NuevoTorneoForm(forms.Form):
             if len(eventos) != len(descripcion_eventos):
                 raise forms.ValidationError("El número de eventos y descripciones debe coincidir.")
         return cleaned_data
+    
+class EditarParticipantesForm(forms.Form):
+    
+    # agrega campos dinámicos dependiendo de los participantes a editar
+    def __init__(self, participantes, *args, **kwargs):
+        
+        super.__init__(*args, **kwargs)
+        
+        for p in participantes:
+            self.fields[p] = forms.CharField(max_length=250, label=p)
