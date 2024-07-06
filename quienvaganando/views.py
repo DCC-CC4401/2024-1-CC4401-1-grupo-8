@@ -183,8 +183,12 @@ def editar_participanes(request, uuid_torneo):
     participantes = Participante.objects.filter(evento__torneo=torneo)
     nombres_participantes = [p.nombre for p in participantes]
     
+    
     if request.method == "GET":
-        form = EditarParticipantesForm(nombres_participantes)
+        # diccionario con nombres actuales (para que sean fácilmente editables en el form)
+        info_actual = dict(zip(nombres_participantes, nombres_participantes))
+        
+        form = EditarParticipantesForm(nombres_participantes, )
         return render(request,  "quienvaganando/editar_participantes.html", {"form": form})
     
     if request.method == "POST":    
