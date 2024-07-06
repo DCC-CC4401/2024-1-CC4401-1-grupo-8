@@ -176,7 +176,7 @@ def overview_torneo(request, uuid_torneo):
             "datos_tabla": datos_tabla
         })
         
-def editar_participanes(request, uuid_torneo):
+def editar_participantes(request, uuid_torneo):
     
     # se obtiene el torneo y sus participantes
     torneo = Torneo.objects.get(uuid=uuid_torneo)
