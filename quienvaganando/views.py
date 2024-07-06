@@ -175,3 +175,25 @@ def overview_torneo(request, uuid_torneo):
             "header_tabla": ["Pos.", "Equipo", "1°", "2°", "3°", "Ptje."],
             "datos_tabla": datos_tabla
         })
+        
+def editar_participanes(request, uuid_torneo):
+    
+    # se obtiene el torneo y sus participantes
+    torneo = Torneo.objects.get(uuid=uuid_torneo)
+    participantes = Participante.objects.filter(evento__torneo=torneo)
+    nombres_participantes = [p.nombre for p in participantes]
+    
+    if request.method == "GET":
+        form = EditarParticipantesForm(nombres_participantes)
+        return render(request,  "quienvaganando/editar_participantes.html", {"form": form})
+    
+    if request.method == "POST":    
+        form = EditarParticipantesForm(nombres_participantes, request.POST)
+        
+        # validar form y cambiar nombres de participantes
+        if form.is_valid():
+            for p, nombre in zip(participantes, form.cleaned_data.values()):
+                p.nombre = nombre
+                p.save()
+            return HttpResponseRedirect(f"/torneos/{uuid_torneo}")
+        return render(request,  "quienvaganando/editar_participantes.html", {"form": form})

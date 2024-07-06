@@ -100,7 +100,7 @@ class EditarParticipantesForm(forms.Form):
             
     def clean(self):
         cleaned_data = super().clean()
-        participantes = cleaned_data.get("participantes").values()
+        participantes = cleaned_data.values()
         
         # revisar que no hayan participantes repetidos
         participantes_comp = [p.lower() for p in participantes]
