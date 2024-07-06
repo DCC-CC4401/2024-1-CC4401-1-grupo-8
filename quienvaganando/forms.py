@@ -106,8 +106,3 @@ class EditarParticipantesForm(forms.Form):
         participantes_comp = [p.lower() for p in participantes]
         if len(participantes_comp) != len(set(participantes_comp)):
             raise forms.ValidationError("Hay participantes repetidos")
-        
-        # revisar que no hayan nombres vacíos
-        for p in participantes:
-            if p.strip() == "":
-                raise forms.ValidationError("No pueden haber participantes con nombres vacíos")
