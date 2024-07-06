@@ -106,3 +106,5 @@ class EditarParticipantesForm(forms.Form):
         participantes_comp = [p.lower() for p in participantes]
         if len(participantes_comp) != len(set(participantes_comp)):
             raise forms.ValidationError("Hay participantes repetidos")
+
+        return cleaned_data
