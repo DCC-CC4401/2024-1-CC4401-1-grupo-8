@@ -6,6 +6,7 @@ from quienvaganando.forms import *
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, F, Sum, Count, Window
 from django.db.models.functions import Rank
+from datetime import date, datetime
 
 
 
@@ -175,3 +176,22 @@ def overview_torneo(request, uuid_torneo):
             "header_tabla": ["Pos.", "Equipo", "1°", "2°", "3°", "Ptje."],
             "datos_tabla": datos_tabla
         })
+    
+def overview_evento(request, uuid_torneo, nombre_evento):
+    torneo = Torneo.objects.get(uuid=uuid_torneo)
+    evento = Evento.objects.get(nombre=nombre_evento, torneo=torneo)
+
+    if request.method == "GET":
+        # ...
+        partidos_pasados = Partido.objects.filter(evento=evento.id).filter(fecha__lt=date.today()).filter(hora__lt=datetime.now())\
+            .values_list().order_by("fecha", "hora")
+        partidos_proximos = Partido.objects.filter(evento=evento.id).filter(fecha__gte=date.today()).filter(hora__gte=datetime.now())\
+            .values_list().order_by("fecha", "hora")
+
+        return render(request, "quienvaganando/overview_evento.html", {
+            "nombre": evento.nombre,
+            "descripcion": evento.descripcion,
+            "partidos_pasados": partidos_pasados,
+            "partidos_proximos": partidos_proximos
+        })
+    
