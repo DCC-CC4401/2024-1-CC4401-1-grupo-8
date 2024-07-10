@@ -191,7 +191,7 @@ def overview_evento(request, uuid_torneo, nombre_evento):
         pas1 = Partido.objects.filter(evento=evento.id).filter(fecha__lt=date.today())
         pas2 = Partido.objects.filter(evento=evento.id).filter(fecha=date.today()).filter(hora__lt=datetime.now())
         partidos_pasados = (pas1|pas2).values("fecha", "categoria", "resultado_a", "resultado_b", "campo_extra_a", "campo_extra_b",
-                                          nombre_equipo_a=F("equipo_a__nombre"), nombre_equipo_b=F("equipo_b__nombre")).order_by("fecha", "hora")
+                                          nombre_equipo_a=F("equipo_a__nombre"), nombre_equipo_b=F("equipo_b__nombre")).order_by("-fecha", "-hora")
         # print(partidos_pasados)
 
         # Query partidos proximos
@@ -199,8 +199,7 @@ def overview_evento(request, uuid_torneo, nombre_evento):
         prox2 = Partido.objects.filter(evento=evento.id).filter(fecha=date.today()).filter(hora__gte=datetime.now())
         partidos_proximos = (prox1|prox2).values("fecha", "hora", "lugar", "categoria", nombre_equipo_a=F("equipo_a__nombre"),
                                                   nombre_equipo_b=F("equipo_b__nombre")).order_by("fecha", "hora")
-        print(partidos_proximos)
-
+    
         return render(request, "quienvaganando/overview_evento.html", {
             "nombre_torneo": torneo.nombre,
             "nombre_evento": evento.nombre,
