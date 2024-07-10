@@ -5,8 +5,11 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-<h1 style="text-align: center;">Editar Participantes</h1>
-<h3>Modifica el nombre de los participantes que desees</h3>
+<h2 style="font-family: 'DM Sans', sans-serif;" > {{ torneo.nombre }}</h2>
+<h4 style="text-align: center;">Editar Participantes</h4>
+
+<p>Modifica el nombre de los participantes que desees</p>
+
 <div style="display: flex;">
 <form method="post">
     {% csrf_token %}

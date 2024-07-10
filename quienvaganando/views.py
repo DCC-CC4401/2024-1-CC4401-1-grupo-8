@@ -204,6 +204,7 @@ def editar_participantes(request, uuid_torneo):
         form_editar = EditarParticipantesForm(nombres_participantes, info_actual, prefix="editar")
         form_eliminar = EliminarParticipantesForm(torneo, nombres_participantes, prefix="eliminar")
         return render(request,  "quienvaganando/editar_participantes.html", {
+            "torneo": torneo,
             "form_editar": form_editar,
             "form_eliminar": form_eliminar
         })
