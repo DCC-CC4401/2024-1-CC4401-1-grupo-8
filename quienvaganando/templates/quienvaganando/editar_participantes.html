@@ -8,13 +8,18 @@
 <h2 style="font-family: 'DM Sans', sans-serif;" > {{ torneo.nombre }}</h2>
 <h4 style="text-align: center;">Editar Participantes</h4>
 
-<p>Modifica el nombre de los participantes que desees</p>
+<h6>Modifica el nombre de los participantes que desees</h6>
 
 <div style="display: flex;">
 <form method="post">
     {% csrf_token %}
-    {{ form_editar | crispy }}
-    {{ form_eliminar | crispy }}
+    {{ form_editar.as_p }}
+
+    <div class="alert">
+        <p>¡ZONA DE PELIGRO!</p>
+        {{ form_eliminar | crispy }}
+    </div>
+
     <button class="btn btn-info" name="Guardar" type="submit">Guardar Cambios</button>
 
 </form>
