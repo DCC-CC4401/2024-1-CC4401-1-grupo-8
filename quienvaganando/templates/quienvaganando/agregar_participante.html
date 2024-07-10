@@ -9,7 +9,7 @@
 <div style="display: flex; justify-content: center;">
 <form method="post">
     {% csrf_token %}
-    {{ form|crispy }}
+    <p>{{ form|crispy }}</p>
     <button class="btn btn-info" name="Guardar" type="submit">Guardar Cambios</button>
 
 </form>
