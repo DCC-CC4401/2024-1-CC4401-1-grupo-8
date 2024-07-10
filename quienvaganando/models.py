@@ -80,3 +80,5 @@ class Partido(models.Model):
     
     # categoría (ej. final, primera ronda)
     categoria = models.CharField(blank=True, max_length=250)
+
+    def __str__(self): return f"{self.equipo_a.nombre} vs {self.equipo_b.nombre} - {self.evento.nombre}"

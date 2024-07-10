@@ -4,9 +4,10 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from quienvaganando.forms import *
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q, F, Sum, Count, Window
+from django.db.models import Q, F, Sum, Count, Window, ExpressionWrapper, fields
 from django.db.models.functions import Rank
 from datetime import date, datetime
+from django.utils import timezone
 
 
 
@@ -182,16 +183,30 @@ def overview_evento(request, uuid_torneo, nombre_evento):
     evento = Evento.objects.get(nombre=nombre_evento, torneo=torneo)
 
     if request.method == "GET":
-        # ...
-        partidos_pasados = Partido.objects.filter(evento=evento.id).filter(fecha__lt=date.today()).filter(hora__lt=datetime.now())\
-            .values_list().order_by("fecha", "hora")
-        partidos_proximos = Partido.objects.filter(evento=evento.id).filter(fecha__gte=date.today()).filter(hora__gte=datetime.now())\
-            .values_list().order_by("fecha", "hora")
+        # Query para tabla de posiciones
+        posiciones = Posicion.objects.filter(evento=evento.id).values_list().order_by("posicion")\
+            .values("posicion", "puntaje", nombre=F("participante__nombre"))
+        
+        # Query partidos pasados
+        pas1 = Partido.objects.filter(evento=evento.id).filter(fecha__lt=date.today())
+        pas2 = Partido.objects.filter(evento=evento.id).filter(fecha=date.today()).filter(hora__lt=datetime.now())
+        partidos_pasados = (pas1|pas2).values("fecha", "categoria", "resultado_a", "resultado_b", "campo_extra_a", "campo_extra_b",
+                                          nombre_equipo_a=F("equipo_a__nombre"), nombre_equipo_b=F("equipo_b__nombre")).order_by("fecha", "hora")
+        # print(partidos_pasados)
+
+        # Query partidos proximos
+        prox1 = Partido.objects.filter(evento=evento.id).filter(fecha__gt=date.today())
+        prox2 = Partido.objects.filter(evento=evento.id).filter(fecha=date.today()).filter(hora__gte=datetime.now())
+        partidos_proximos = (prox1|prox2).values("fecha", "hora", "lugar", "categoria", nombre_equipo_a=F("equipo_a__nombre"),
+                                                  nombre_equipo_b=F("equipo_b__nombre")).order_by("fecha", "hora")
+        print(partidos_proximos)
 
         return render(request, "quienvaganando/overview_evento.html", {
-            "nombre": evento.nombre,
+            "nombre_torneo": torneo.nombre,
+            "nombre_evento": evento.nombre,
+            "descripcion": evento.descripcion,
+            "posiciones": posiciones,
             "descripcion": evento.descripcion,
             "partidos_pasados": partidos_pasados,
             "partidos_proximos": partidos_proximos
         })
-    
