@@ -9,5 +9,6 @@ urlpatterns = [
     path('torneos/', views.lista_torneos, name='torneos'),
     path('crear_torneo/', views.nuevo_torneo, name='creacion_torneo'),
     path('torneos/<str:uuid_torneo>/', views.overview_torneo, name='overview_torneo'),
-    path('torneos/<str:uuid_torneo>/<str:nombre_evento>', views.overview_evento, name="overview_evento")
+    path('torneos/<str:uuid_torneo>/<str:nombre_evento>', views.overview_evento, name="overview_evento"),
+    path('torneos/<str:uuid_torneo>/<str:nombre_evento>/eliminar/', views.eliminar_evento, name="eliminar_evento")
 ]

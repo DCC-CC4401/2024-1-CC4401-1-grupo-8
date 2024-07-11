@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from quienvaganando.models import *
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
@@ -8,6 +8,8 @@ from django.db.models import Q, F, Sum, Count, Window, ExpressionWrapper, fields
 from django.db.models.functions import Rank
 from datetime import date, datetime
 from django.utils import timezone
+from django.contrib import messages
+from django.urls import reverse
 
 
 
@@ -207,5 +209,16 @@ def overview_evento(request, uuid_torneo, nombre_evento):
             "posiciones": posiciones,
             "descripcion": evento.descripcion,
             "partidos_pasados": partidos_pasados,
-            "partidos_proximos": partidos_proximos
+            "partidos_proximos": partidos_proximos,
+            "uuid_torneo": torneo.uuid
         })
+
+def eliminar_evento(request, uuid_torneo, nombre_evento):
+    evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
+    if request.method == "POST":
+        evento.delete()
+        messages.success(request, "Evento eliminado correctamente")
+        return redirect('overview_torneo', uuid_torneo=uuid_torneo)
+    else:
+        return render(request, 'quienvaganando/eliminar_evento.html', {'evento': evento})
+   

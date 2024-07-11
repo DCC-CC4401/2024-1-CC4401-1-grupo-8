@@ -15,6 +15,11 @@
       overflow-y: auto;
       max-height: 500px;
     }
+    .eliminar-evento {
+      position: absolute;
+      top: 150px;
+      right: 20px;
+   }
 
   </style>
 
@@ -22,6 +27,7 @@
 <body>
   <h2 style="font-family: 'DM Sans', sans-serif; text-align: center;" > {{ nombre_torneo }}: {{ nombre_evento }}</h2>
   <h6 style="text-align: center;">{{ descripcion }}</h6>
+  <a href="{% url 'eliminar_evento' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}" class="btn btn-danger eliminar-evento">Eliminar Evento</a>
   <div style="float:left">
   
   <!-- TABLA PUNTAJES -->
