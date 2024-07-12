@@ -3,6 +3,7 @@
 {% block subtitle %}{{nombre}}{% endblock subtitle %}
 
 {% block content %}
+
 <head>
   <style>
     .container{
@@ -22,15 +23,17 @@
    }
 
   </style>
-
 </head>
+
 <body>
   <h2 style="font-family: 'DM Sans', sans-serif; text-align: center;" > {{ nombre_torneo }}: {{ nombre_evento }}</h2>
   <h6 style="text-align: center;">{{ descripcion }}</h6>
+  {% if is_owner %}
   <a href="{% url 'eliminar_evento' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}" class="btn btn-danger eliminar-evento">Eliminar Evento</a>
+  {% endif %}
   <div style="float:left">
   
-  <!-- TABLA PUNTAJES -->
+    <!-- TABLA PUNTAJES -->
     <div class="container">
       <div class="col-7" style="font-family: 'DM Sans', sans-serif;" style="display: flex">
         <h4 class="text-danger fs-3 ms-4 "  style="font-family: 'DM Sans', sans-serif;" > Tabla de puntajes</h4>
@@ -55,69 +58,70 @@
       </div>
     </div>
 
-<!-- Partidos Pasados -->
-<!-- como una tabla mientras, después podríamos hacer algo más lindo -->
-<div class="container">
-<div class="col-7" style="font-family: 'DM Sans', sans-serif;">
-  <h4 class="text-danger fs-3 ms-4 scroll"  style="font-family: 'DM Sans', sans-serif;" > Partidos Pasados</h4>
-  <div class="table-container">
-  <table class="table">
-    <thead>
-      <tr class="table-danger">
-        <th scope="col" >Fecha</th>
-        <th scope="col" >Categoría</th>
-        <th scope="col" ></th>
-        <th scope="col" >Resultado</th>
-        <th scope="col" ></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for partido in partidos_pasados %}
-      <tr>
-        <td class="fs-5" >{{ partido.fecha|date:"d/m/y" }}</td>
-        <td class="fs-5" >{{ partido.categoria }}</td>
-        <td class="fs-5" >{{ partido.nombre_equipo_a }}</td>
-        <td class="fs-5" >{{ partido.resultado_a }} - {{partido.resultado_b}}</td>
-        <td class="fs-5" >{{ partido.nombre_equipo_b }}</td>
+    <!-- Partidos Pasados -->
+    <!-- como una tabla mientras, después podríamos hacer algo más lindo -->
+    <div class="container">
+      
+      <div class="col-7" style="font-family: 'DM Sans', sans-serif;">
+        <h4 class="text-danger fs-3 ms-4 scroll"  style="font-family: 'DM Sans', sans-serif;" > Partidos Pasados</h4>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr class="table-danger">
+                <th scope="col" >Fecha</th>
+                <th scope="col" >Categoría</th>
+                <th scope="col" ></th>
+                <th scope="col" >Resultado</th>
+                <th scope="col" ></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for partido in partidos_pasados %}
+                <tr>
+                  <td class="fs-5" >{{ partido.fecha|date:"d/m/y" }}</td>
+                  <td class="fs-5" >{{ partido.categoria }}</td>
+                  <td class="fs-5" >{{ partido.nombre_equipo_a }}</td>
+                  <td class="fs-5" >{{ partido.resultado_a }} - {{partido.resultado_b}}</td>
+                  <td class="fs-5" >{{ partido.nombre_equipo_b }}</td>
 
-      </tr> 
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
-</div>
+                </tr> 
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+      </div>
 
-<!-- Partidos Próximos -->
+      <!-- Partidos Próximos -->
 
-<div class="col-7" style="font-family: 'DM Sans', sans-serif;">
-  <h4 class="text-danger fs-3 ms-4 scroll"  style="font-family: 'DM Sans', sans-serif;" > Partidos Próximos</h4>
-  <div class="table-container">      
-  <table class="table">
-    <thead>
-      <tr class="table-danger">
-        <th scope="col" >Fecha</th>
-        <th scope="col" >Hora</th>
-        <th scope="col" >Lugar</th>
-        <th scope="col" >Categoría</th>
-        <th scope="col" >Partido</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for partido in partidos_proximos %}
-      <tr>
-        <td class="fs-5" >{{ partido.fecha|date:"d/m/y" }}</td>
-        <td class="fs-5" >{{ partido.hora }}</td>
-        <td class="fs-5" >{{ partido.lugar }}</td>
-        <td class="fs-5" >{{ partido.categoria }}</td>
-        <td class="fs-5" >{{ partido.nombre_equipo_a }} vs. {{partido.nombre_equipo_b}}</td>
-      </tr> 
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
-</div>
-</div>
-</div>
+      <div class="col-7" style="font-family: 'DM Sans', sans-serif;">
+        <h4 class="text-danger fs-3 ms-4 scroll"  style="font-family: 'DM Sans', sans-serif;" > Partidos Próximos</h4>
+        <div class="table-container">      
+          <table class="table">
+            <thead>
+              <tr class="table-danger">
+                <th scope="col" >Fecha</th>
+                <th scope="col" >Hora</th>
+                <th scope="col" >Lugar</th>
+                <th scope="col" >Categoría</th>
+                <th scope="col" >Partido</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for partido in partidos_proximos %}
+              <tr>
+                <td class="fs-5" >{{ partido.fecha|date:"d/m/y" }}</td>
+                <td class="fs-5" >{{ partido.hora }}</td>
+                <td class="fs-5" >{{ partido.lugar }}</td>
+                <td class="fs-5" >{{ partido.categoria }}</td>
+                <td class="fs-5" >{{ partido.nombre_equipo_a }} vs. {{partido.nombre_equipo_b}}</td>
+              </tr> 
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </body>
 

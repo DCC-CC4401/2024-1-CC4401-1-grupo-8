@@ -185,6 +185,8 @@ def overview_evento(request, uuid_torneo, nombre_evento):
     evento = Evento.objects.get(nombre=nombre_evento, torneo=torneo)
 
     if request.method == "GET":
+        # Solo el owner puede modificar el torneo
+        is_owner = (torneo.owner == request.user)
         # Query para tabla de posiciones
         posiciones = Posicion.objects.filter(evento=evento.id).values_list().order_by("posicion")\
             .values("posicion", "puntaje", nombre=F("participante__nombre"))
@@ -210,6 +212,7 @@ def overview_evento(request, uuid_torneo, nombre_evento):
             "descripcion": evento.descripcion,
             "partidos_pasados": partidos_pasados,
             "partidos_proximos": partidos_proximos,
+            "is_owner": is_owner,
             "uuid_torneo": torneo.uuid
         })
 
