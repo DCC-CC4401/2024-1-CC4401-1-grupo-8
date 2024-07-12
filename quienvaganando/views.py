@@ -224,4 +224,18 @@ def eliminar_evento(request, uuid_torneo, nombre_evento):
         return redirect('overview_torneo', uuid_torneo=uuid_torneo)
     else:
         return render(request, 'quienvaganando/eliminar_evento.html', {'evento': evento})
+    
+@login_required
+def editar_evento(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id)
+
+    if request.method == 'POST':
+        form = EditarEventoForm(request.POST, instance=evento)
+        if form.is_valid():
+            form.save()
+            return redirect('home')  # Redirige a la página principal o a donde desees
+    else:
+        form = EditarEventoForm(instance=evento)
+
+    return render(request, 'quienvaganando/editar_evento.html', {'form': form})
    

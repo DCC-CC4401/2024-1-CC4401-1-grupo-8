@@ -1,6 +1,7 @@
 from django import forms
 from .models import User
 from .models import Torneo
+from .models import Evento
 from django.contrib.auth import authenticate
 from django.forms import PasswordInput
 
@@ -87,3 +88,15 @@ class NuevoTorneoForm(forms.Form):
             if len(eventos) != len(descripcion_eventos):
                 raise forms.ValidationError("El número de eventos y descripciones debe coincidir.")
         return cleaned_data
+    
+class EditarEventoForm(forms.ModelForm):
+    class Meta:
+        model = Evento
+        fields = ['nombre', 'descripcion']
+        labels = {
+            'nombre': 'Nombre del Evento',
+            'descripcion': 'Descripción del Evento'
+        }
+        widgets = {
+            'descripcion': forms.Textarea(attrs={'rows': 3})
+        }
