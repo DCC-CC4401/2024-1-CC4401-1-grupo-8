@@ -10,4 +10,5 @@ urlpatterns = [
     path('crear_torneo/', views.nuevo_torneo, name='creacion_torneo'),
     path('torneos/<str:uuid_torneo>/', views.overview_torneo, name='overview_torneo'),
     path('torneos/<str:uuid_torneo>/editar', views.editar_torneo, name='editar_torneo'),
+    path('eliminar_torneo/<uuid:uuid_torneo>/', views.eliminar_torneo, name='eliminar_torneo'),
 ]
