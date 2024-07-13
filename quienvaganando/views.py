@@ -239,3 +239,20 @@ def editar_evento(request, evento_id):
 
     return render(request, 'quienvaganando/editar_evento.html', {'form': form})
    
+
+def agregar_partido(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id)
+    
+    if request.method == 'GET':
+        form = AgregarPartidoForm()
+        return render(request, "quienvaganando/agregar_partido.html", {"form": form})
+    
+    elif request.method == 'POST':
+        form = AgregarPartidoForm(request.POST)
+        if form.is_valid():
+            partido = form.save(commit=False)
+            partido.evento = evento
+            partido.save()
+            return redirect('home')  # Cambia 'home' por la vista adecuada
+        else:
+            return render(request, 'quienvaganando/agregar_partido.html', {"form": form})
