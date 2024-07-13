@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from quienvaganando.models import *
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
@@ -182,7 +182,7 @@ def editar_torneo(request, uuid_torneo):
     torneo = Torneo.objects.get(uuid=uuid_torneo)
     if request.method == "GET":
         form = EditarTorneoForm(instance=torneo)
-        return render(request,  "quienvaganando/editar_torneo.html", {"form": form})
+        return render(request, "quienvaganando/editar_torneo.html", {"form": form, "uuid_torneo": uuid_torneo})
     if request.method == "POST":    
         form = EditarTorneoForm(request.POST, instance=torneo)
         # Se revisa la validez del form.
@@ -196,4 +196,11 @@ def editar_torneo(request, uuid_torneo):
             torneo.descripcion = nueva_descripcion
             torneo.save()
             return HttpResponseRedirect(f"/torneos/{uuid_torneo}")
-        return render(request,  "quienvaganando/editar_torneo.html", {"form": form})
+        return render(request, "quienvaganando/editar_torneo.html", {"form": form, "uuid_torneo": uuid_torneo})
+
+def eliminar_torneo(request, uuid_torneo):
+    torneo = Torneo.objects.get(uuid=uuid_torneo)
+    if request.method == "POST":
+        torneo.delete()
+        return redirect('/torneos/')  # Redirige a la lista de torneos después de la eliminación
+    return render(request, "quienvaganando/editar_torneo.html", {"form": EditarTorneoForm(instance=torneo)})
