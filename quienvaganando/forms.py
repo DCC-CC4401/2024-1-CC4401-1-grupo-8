@@ -103,6 +103,16 @@ class EditarEventoForm(forms.ModelForm):
         widgets = {
             'descripcion': forms.Textarea(attrs={'rows': 3})
         }
+    def clean_nombre(self):
+        nombre = self.cleaned_data['nombre']
+        evento_id = self.instance.id  
+        torneo_id = self.instance.torneo.id  
+        
+        
+        if Evento.objects.filter(nombre__iexact=nombre, torneo_id=torneo_id).exclude(id=evento_id).exists():
+            raise forms.ValidationError("Ya existe un evento con este nombre en el mismo torneo.")
+        
+        return nombre
 
 class AgregarPartidoForm(forms.ModelForm):
     class Meta:
@@ -121,17 +131,6 @@ class AgregarPartidoForm(forms.ModelForm):
             'hora': forms.TimeInput(attrs={'type': 'time'})
         }
 
-
-    def clean_nombre(self):
-        nombre = self.cleaned_data['nombre']
-        evento_id = self.instance.id  
-        torneo_id = self.instance.torneo.id  
-        
-        
-        if Evento.objects.filter(nombre__iexact=nombre, torneo_id=torneo_id).exclude(id=evento_id).exists():
-            raise forms.ValidationError("Ya existe un evento con este nombre en el mismo torneo.")
-        
-        return nombre
     
 class EditarPartidoForm(forms.ModelForm):
     nombre_equipo_a = forms.CharField(label='Nombre del Equipo A', max_length=250)
@@ -154,6 +153,7 @@ class EditarPartidoForm(forms.ModelForm):
         }
         widgets = {
             'fecha': forms.DateInput(attrs={'type': 'date'}),
+            'hora': forms.TimeInput(attrs={'type': 'time'}),
             'campo_extra_a': forms.Textarea(attrs={'rows': 3}),
             'campo_extra_b': forms.Textarea(attrs={'rows': 3})
         }
