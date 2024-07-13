@@ -5,10 +5,11 @@
 {% block content %}
 
 <head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     .container{
       display: flex;
-      gap: 20px
+      gap: 50px
     }
     .table-container{
       width: 100%;
@@ -21,13 +22,12 @@
       top: 150px;
       right: 20px;
    }
-
   </style>
 </head>
 
 <body>
   <h2 style="font-family: 'DM Sans', sans-serif; text-align: center;" > {{ nombre_torneo }}: {{ nombre_evento }}</h2>
-  <h6 style="text-align: center;">{{ descripcion }}</h6>
+  <h5 style="text-align: center;">{{ descripcion }}</h5>
   {% if is_owner %}
   <a href="{% url 'eliminar_evento' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}" class="btn btn-danger eliminar-evento">Eliminar Evento</a>
   {% endif %}
@@ -72,7 +72,7 @@
                 <th scope="col" >Categoría</th>
                 <th scope="col" ></th>
                 <th scope="col" >Resultado</th>
-                <th scope="col" ></th>
+                <th scope="col" ></th>                
               </tr>
             </thead>
             <tbody>
@@ -83,7 +83,6 @@
                   <td class="fs-5" >{{ partido.nombre_equipo_a }}</td>
                   <td class="fs-5" >{{ partido.resultado_a }} - {{partido.resultado_b}}</td>
                   <td class="fs-5" >{{ partido.nombre_equipo_b }}</td>
-
                 </tr> 
                 {% endfor %}
               </tbody>
@@ -104,6 +103,9 @@
                 <th scope="col" >Lugar</th>
                 <th scope="col" >Categoría</th>
                 <th scope="col" >Partido</th>
+                {% if is_owner %}
+                <th scope="col" ></th>
+                {% endif %}
               </tr>
             </thead>
             <tbody>
@@ -114,6 +116,15 @@
                 <td class="fs-5" >{{ partido.lugar }}</td>
                 <td class="fs-5" >{{ partido.categoria }}</td>
                 <td class="fs-5" >{{ partido.nombre_equipo_a }} vs. {{partido.nombre_equipo_b}}</td>
+                {% if is_owner %}
+                <td class="fs-5" >
+                  <form action="{% url 'eliminar_partido' uuid_torneo nombre_evento partido %}" method="post">
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </form>
+                </td>
+                {% endif %}
               </tr> 
               {% endfor %}
             </tbody>

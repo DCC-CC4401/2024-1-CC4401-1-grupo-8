@@ -225,3 +225,9 @@ def eliminar_evento(request, uuid_torneo, nombre_evento):
     else:
         return render(request, 'quienvaganando/eliminar_evento.html', {'evento': evento})
    
+def eliminar_partido(request, uuid_torneo, nombre_evento, id_partido):
+    evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
+    partido = get_object_or_404(Partido, id=id_partido, evento_id=evento.id)
+    partido.delete()
+    messages.succes(request, "Partido eliminado correctamente")
+    return redirect('overview_evento', uuid_torneo=uuid_torneo, nombre_evento=nombre_evento)
