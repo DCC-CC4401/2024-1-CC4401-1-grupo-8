@@ -1,6 +1,7 @@
 from django import forms
 from .models import User
 from .models import Torneo
+from .models import Partido
 from .models import Evento
 from .models import Partido
 from .models import Participante
@@ -102,6 +103,24 @@ class EditarEventoForm(forms.ModelForm):
         widgets = {
             'descripcion': forms.Textarea(attrs={'rows': 3})
         }
+
+class AgregarPartidoForm(forms.ModelForm):
+    class Meta:
+        model = Partido
+        fields = ['equipo_a', 'equipo_b', 'categoria', 'fecha', 'hora', 'lugar']
+        labels = {
+            'equipo_a': 'Nombre del equipo A',
+            'equipo_b': 'Nombre del equipo B',
+            'categoria': 'Categoría',
+            'fecha': 'Fecha del partido',
+            'hora': 'Hora del partido',
+            'lugar': 'Lugar del partido'
+        }
+        widgets = {
+            'fecha': forms.DateInput(attrs={'type': 'date'}),
+            'hora': forms.TimeInput(attrs={'type': 'time'})
+        }
+
 
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
