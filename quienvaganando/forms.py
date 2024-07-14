@@ -114,6 +114,8 @@ class EditarEventoForm(forms.ModelForm):
         
         return nombre
 
+    
+
 class AgregarPartidoForm(forms.ModelForm):
     class Meta:
         model = Partido
@@ -126,11 +128,35 @@ class AgregarPartidoForm(forms.ModelForm):
             'hora': 'Hora del partido',
             'lugar': 'Lugar del partido'
         }
+
         widgets = {
             'fecha': forms.DateInput(attrs={'type': 'date'}),
-            'hora': forms.TimeInput(attrs={'type': 'time'})
+            'hora': forms.TimeInput(attrs={'type': 'time'}),
+            'campo_extra_a': forms.Textarea(attrs={'rows': 3}),
+            'campo_extra_b': forms.Textarea(attrs={'rows': 3})
         }
+    
+    def __init__(self, *args, **kwargs):
+        torneo_id = kwargs.pop('torneo_id', None)
+        super().__init__(*args, **kwargs)
+        if torneo_id:
+            self.fields['equipo_a'].queryset = Participante.objects.filter(torneo_id=torneo_id)
+            self.fields['equipo_b'].queryset = Participante.objects.filter(torneo_id=torneo_id)
+        self.fields['categoria'].required = True
+        self.fields['fecha'].required = True
+        self.fields['hora'].required = True
+        self.fields['lugar'].required = True    
 
+    def clean(self):
+        cleaned_data = super().clean()
+        equipo_a = cleaned_data.get('equipo_a')
+        equipo_b = cleaned_data.get('equipo_b')
+
+        if equipo_a and equipo_b and equipo_a == equipo_b:
+            raise forms.ValidationError("Los equipos no pueden ser iguales.")
+
+        return cleaned_data
+    
     
 class EditarPartidoForm(forms.ModelForm):   
     class Meta:

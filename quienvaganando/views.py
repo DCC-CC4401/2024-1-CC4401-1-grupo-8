@@ -242,13 +242,14 @@ def editar_evento(request, evento_id):
 
 def agregar_partido(request, evento_id):
     evento = get_object_or_404(Evento, id=evento_id)
+    torneo_id = evento.torneo.id  # Asumiendo que Evento tiene una relación con Torneo
     
     if request.method == 'GET':
-        form = AgregarPartidoForm()
+        form = AgregarPartidoForm(torneo_id=torneo_id)
         return render(request, "quienvaganando/agregar_partido.html", {"form": form})
     
     elif request.method == 'POST':
-        form = AgregarPartidoForm(request.POST)
+        form = AgregarPartidoForm(request.POST, torneo_id=torneo_id)
         if form.is_valid():
             partido = form.save(commit=False)
             partido.evento = evento
