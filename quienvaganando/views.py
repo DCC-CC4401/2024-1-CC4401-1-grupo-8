@@ -262,9 +262,13 @@ def editar_partido(request, id_torneo, id_evento, partido_id):
     torneo = get_object_or_404(Torneo, id=id_torneo)
     evento = get_object_or_404(Evento, id=id_evento, torneo=torneo)
     partido = get_object_or_404(Partido, id=partido_id)
+
+    if request.method == 'GET':
+        form = EditarPartidoForm(id_torneo=id_torneo)
+        return render(request, "quienvaganando/agregar_partido.html", {"form": form})
     
-    if request.method == 'POST':
-        form = EditarPartidoForm(request.POST, instance=partido)
+    elif request.method == 'POST':
+        form = EditarPartidoForm(request.POST, instance=partido, id_torneo=id_torneo)
         if form.is_valid():
             form.save()
             return redirect('home')

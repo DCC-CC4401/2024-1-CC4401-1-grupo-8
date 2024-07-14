@@ -132,16 +132,13 @@ class AgregarPartidoForm(forms.ModelForm):
         }
 
     
-class EditarPartidoForm(forms.ModelForm):
-    nombre_equipo_a = forms.CharField(label='Nombre del Equipo A', max_length=250)
-    nombre_equipo_b = forms.CharField(label='Nombre del Equipo B', max_length=250)
-    
+class EditarPartidoForm(forms.ModelForm):   
     class Meta:
         model = Partido
-        fields = ['nombre_equipo_a', 'nombre_equipo_b', 'fecha', 'hora', 'lugar', 'resultado_a', 'resultado_b', 'campo_extra_a', 'campo_extra_b', 'categoria']
+        fields = ['equipo_a', 'equipo_b', 'fecha', 'hora', 'lugar', 'resultado_a', 'resultado_b', 'campo_extra_a', 'campo_extra_b', 'categoria']
         labels = {
-                'nombre_equipo_a': 'Nombre del Equipo A',
-                'nombre_equipo_b': 'Nombre del Equipo B',
+                'equipo_a': 'Nombre del Equipo A',
+                'equipo_b': 'Nombre del Equipo B',
                 'fecha': 'Fecha del Evento',
                 'hora': 'Hora del Evento',
                 'lugar': 'Lugar del Evento',
