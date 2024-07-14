@@ -6,7 +6,7 @@ from quienvaganando.forms import *
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, F, Sum, Count, Window
 from django.db.models.functions import Rank
-
+from datetime import date, datetime
 
 
 def register_user(request):
@@ -165,6 +165,18 @@ def overview_torneo(request, uuid_torneo):
         ultimo_lugar = len(datos_tabla)+1
         for participante in participantes_vacios:
             datos_tabla.append([ultimo_lugar, participante, 0, 0, 0, 0])
+
+         # Obtener los eventos del torneo
+        eventos_torneo = Evento.objects.filter(torneo=torneo)
+
+        # Filtrar los partidos futuros y los de hoy en adelante
+        prox1 = Partido.objects.filter(evento__in=eventos_torneo).filter(fecha__gt=date.today())
+        prox2 = Partido.objects.filter(evento__in=eventos_torneo).filter(fecha=date.today()).filter(hora__gte=datetime.now().time())
+        
+        # Combinar ambas consultas y ordenar los resultados
+        partidos_proximos = (prox1 | prox2).values("fecha", "hora", "lugar", "categoria",
+                                                   nombre_equipo_a=F("equipo_a__nombre"),
+                                                   nombre_equipo_b=F("equipo_b__nombre")).order_by("fecha", "hora")[:5]
         
         
         # Renderiza la plantilla overview_torneo.html, pasando los datos calculados y obtenidos de
