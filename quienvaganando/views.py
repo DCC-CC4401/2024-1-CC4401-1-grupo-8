@@ -185,5 +185,6 @@ def overview_torneo(request, uuid_torneo):
             "nombre": torneo.nombre,
             "eventos": nombres_eventos,
             "header_tabla": ["Pos.", "Equipo", "1°", "2°", "3°", "Ptje."],
-            "datos_tabla": datos_tabla
+            "datos_tabla": datos_tabla,
+            "proximos_partidos": partidos_proximos
         })

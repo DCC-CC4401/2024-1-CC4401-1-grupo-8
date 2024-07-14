@@ -46,6 +46,39 @@
         </ul>
       </div>
     </div>
+  
+    <div class="row mt-4">
+      <!-- Columna para los próximos partidos -->
+      <div class="col-12" style="font-family: 'DM Sans', sans-serif;">
+        <h4 class="text-danger fs-3" >Próximos 5 Partidos</h4>
+        
+        <table class="table ">
+          <thead>
+            <tr class="table-danger">
+              <th scope="col">Fecha</th>
+              <th scope="col">Hora</th>
+              <th scope="col">Lugar</th>
+              <th scope="col">Categoría</th>
+              <th scope="col">Equipo A</th>
+              <th scope="col">Equipo B</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for partido in proximos_partidos %}
+            <tr>
+              <td class="fs-5">{{ partido.fecha }}</td>
+              <td class="fs-5">{{ partido.hora }}</td>
+              <td class="fs-5">{{ partido.lugar }}</td>
+              <td class="fs-5">{{ partido.categoria }}</td>
+              <td class="fs-5">{{ partido.nombre_equipo_a }}</td>
+              <td class="fs-5">{{ partido.nombre_equipo_b }}</td>
+            </tr> 
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
   </div>
 </body>
 
