@@ -10,6 +10,7 @@ from datetime import date, datetime
 from django.utils import timezone
 from django.contrib import messages
 from django.urls import reverse
+from django.core.exceptions import PermissionDenied
 
 
 
@@ -218,6 +219,9 @@ def overview_evento(request, uuid_torneo, nombre_evento):
 
 def eliminar_evento(request, uuid_torneo, nombre_evento):
     evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
+    torneo = Torneo.objects.get(uuid=uuid_torneo)
+    if not (request.user.is_authenticated and request.user == torneo.owner):
+        raise PermissionDenied
     if request.method == "POST":
         evento.delete()
         messages.success(request, "Evento eliminado correctamente")
