@@ -21,18 +21,39 @@
       top: 150px;
       right: 20px;
    }
+   .button-container {
+    top: 150px;
+    position: absolute;
+    right: 20px;
+    justify-content: flex-end;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    }
   </style>
 </head>
 
 <body>
   <a href="{% url 'overview_torneo' uuid_torneo=uuid_torneo %}" class="btn btn-outline-dark"><i class="fas fa-arrow-left"></i> Volver a Torneo</a>
+  <a href="{% url 'overview_torneo' uuid_torneo=uuid_torneo %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Volver a Torneo</a>
+  <div class="button-container">
+    <button class="btn btn-secondary" onclick="window.location.href='{% url 'eliminar_evento' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}'">Eliminar Evento <i class="fas fa-trash-alt"></i></button>
+    <button class="btn btn-secondary" onclick="window.location.href='{% url 'editar_evento' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}'">Editar Evento <i class="fas fa-edit"></i></button>
+    <button class="btn btn-secondary" onclick="window.location.href='{% url 'agregar_partido' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}'">Agregar Partido <i class="fas fa-plus"></i></button>
+  </div>
+
   <h2 style="font-family: 'DM Sans', sans-serif; text-align: center;" > {{ nombre_torneo }}: {{ nombre_evento }}</h2>
   <h5 style="text-align: center;">{{ descripcion }}</h5>
   {% if is_owner %}
-  <a href="{% url 'eliminar_evento' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}" class="btn btn-danger eliminar-evento">Eliminar Evento <i class="fas fa-trash-alt"></i></a>
+
   {% endif %}
   <div style="float:left">
-  
+
+      
+      <!-- <a href="{% url 'eliminar_evento' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}" class="btn btn-danger eliminar-evento">Eliminar Evento <i class="fas fa-trash-alt"></i></a>
+      <a href="{% url 'editar_evento' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}" class="btn btn-danger eliminar-evento">Editar Evento <i class="fas fa-edit"></i></a>
+      <a href="{% url 'agregar_partido' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}" class="btn btn-danger eliminar-evento">Agregar Partido <i class="fas fa-plus"></i></a> -->
     <!-- TABLA PUNTAJES -->
     <div class="container">
       <div class="col-7" style="font-family: 'DM Sans', sans-serif;" style="display: flex">

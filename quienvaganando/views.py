@@ -220,6 +220,7 @@ def overview_evento(request, uuid_torneo, nombre_evento):
             "uuid_torneo": torneo.uuid
         })
 
+@login_required
 def eliminar_evento(request, uuid_torneo, nombre_evento):
     evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
     torneo = Torneo.objects.get(uuid=uuid_torneo)
@@ -231,7 +232,59 @@ def eliminar_evento(request, uuid_torneo, nombre_evento):
         return redirect('overview_torneo', uuid_torneo=uuid_torneo)
     else:
         return render(request, 'quienvaganando/eliminar_evento.html', {'evento': evento})
+    
+@login_required
+def editar_evento(request, uuid_torneo, nombre_evento):
+    evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
+    #evento = get_object_or_404(Evento, id=evento_id)
+
+    if request.method == 'POST':
+        form = EditarEventoForm(request.POST, instance=evento)
+        if form.is_valid():
+            form.save()
+            return redirect('home')  # Redirige a la página principal o a donde desees
+    else:
+        form = EditarEventoForm(instance=evento)
+
+    return render(request, 'quienvaganando/editar_evento.html', {'form': form})
    
+@login_required
+def agregar_partido(request, uuid_torneo, nombre_evento):
+    evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
+    torneo_id = evento.torneo.id
+    
+    if request.method == 'GET':
+        form = AgregarPartidoForm(torneo_id=torneo_id)
+        return render(request, "quienvaganando/agregar_partido.html", {"form": form})
+    
+    elif request.method == 'POST':
+        form = AgregarPartidoForm(request.POST, torneo_id=torneo_id)
+        if form.is_valid():
+            partido = form.save(commit=False)
+            partido.evento = evento
+            partido.save()
+            return redirect('home')
+        else:
+            return render(request, 'quienvaganando/agregar_partido.html', {"form": form})
+        
+@login_required
+def editar_partido(request, uuid_torneo, nombre_evento, uuid_partido):
+    evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
+    id_torneo = evento.torneo.id  # Asumiendo que Evento tiene una relación con Torneo
+    partido = get_object_or_404(Partido, uuid=uuid_partido)
+    ### 
+    if request.method == 'POST':
+        form = EditarPartidoForm(request.POST, instance=partido, id_torneo=id_torneo)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = EditarPartidoForm(instance=partido, id_torneo=id_torneo)
+    
+    return render(request, 'quienvaganando/editar_partido.html', {'form': form})
+
+
+@login_required
 def eliminar_partido(request, uuid_torneo, nombre_evento, id_partido):
     torneo = Torneo.objects.get(uuid=uuid_torneo)
     evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
@@ -239,5 +292,6 @@ def eliminar_partido(request, uuid_torneo, nombre_evento, id_partido):
     if not (request.user.is_authenticated and request.user == torneo.owner):
         raise PermissionDenied
     partido.delete()
-    messages.succes(request, "Partido eliminado correctamente")
+    messages.success(request, "Partido eliminado correctamente")
     return redirect('overview_evento', uuid_torneo=uuid_torneo, nombre_evento=nombre_evento)
+
