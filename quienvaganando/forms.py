@@ -1,6 +1,10 @@
 from django import forms
 from .models import User
 from .models import Torneo
+from .models import Partido
+from .models import Evento
+from .models import Partido
+from .models import Participante
 from django.contrib.auth import authenticate
 from django.forms import PasswordInput
 
@@ -87,3 +91,121 @@ class NuevoTorneoForm(forms.Form):
             if len(eventos) != len(descripcion_eventos):
                 raise forms.ValidationError("El número de eventos y descripciones debe coincidir.")
         return cleaned_data
+    
+class EditarEventoForm(forms.ModelForm):
+    class Meta:
+        model = Evento
+        fields = ['nombre', 'descripcion']
+        labels = {
+            'nombre': 'Nombre del Evento',
+            'descripcion': 'Descripción del Evento'
+        }
+        widgets = {
+            'descripcion': forms.Textarea(attrs={'rows': 3})
+        }
+    def clean_nombre(self):
+        nombre = self.cleaned_data['nombre']
+        evento_id = self.instance.id  
+        torneo_id = self.instance.torneo.id  
+        
+        
+        if Evento.objects.filter(nombre__iexact=nombre, torneo_id=torneo_id).exclude(id=evento_id).exists():
+            raise forms.ValidationError("Ya existe un evento con este nombre en el mismo torneo.")
+        
+        return nombre
+
+    
+
+class AgregarPartidoForm(forms.ModelForm):
+    class Meta:
+        model = Partido
+        fields = ['equipo_a', 'equipo_b', 'categoria', 'fecha', 'hora', 'lugar']
+        labels = {
+            'equipo_a': 'Nombre del equipo A',
+            'equipo_b': 'Nombre del equipo B',
+            'categoria': 'Categoría',
+            'fecha': 'Fecha del partido',
+            'hora': 'Hora del partido',
+            'lugar': 'Lugar del partido'
+        }
+
+        widgets = {
+            'fecha': forms.DateInput(attrs={'type': 'date'}),
+            'hora': forms.TimeInput(attrs={'type': 'time'}),
+            'campo_extra_a': forms.Textarea(attrs={'rows': 3}),
+            'campo_extra_b': forms.Textarea(attrs={'rows': 3})
+        }
+    
+    def __init__(self, *args, **kwargs):
+        torneo_id = kwargs.pop('torneo_id', None)
+        super().__init__(*args, **kwargs)
+        if torneo_id:
+            self.fields['equipo_a'].queryset = Participante.objects.filter(torneo_id=torneo_id)
+            self.fields['equipo_b'].queryset = Participante.objects.filter(torneo_id=torneo_id)
+        self.fields['categoria'].required = True
+        self.fields['fecha'].required = True
+        self.fields['hora'].required = True
+        self.fields['lugar'].required = True    
+
+    def clean(self):
+        cleaned_data = super().clean()
+        equipo_a = cleaned_data.get('equipo_a')
+        equipo_b = cleaned_data.get('equipo_b')
+
+        if equipo_a and equipo_b and equipo_a == equipo_b:
+            raise forms.ValidationError("Los equipos no pueden ser iguales.")
+
+        return cleaned_data
+    
+    
+class EditarPartidoForm(forms.ModelForm):   
+    class Meta:
+        model = Partido
+        fields = ['equipo_a', 'equipo_b', 'fecha', 'hora', 'lugar', 'resultado_a', 'resultado_b', 'campo_extra_a', 'campo_extra_b', 'categoria']
+        labels = {
+                'equipo_a': 'Nombre del Equipo A',
+                'equipo_b': 'Nombre del Equipo B',
+                'fecha': 'Fecha del Evento',
+                'hora': 'Hora del Evento',
+                'lugar': 'Lugar del Evento',
+                'resultado_a': 'Resultado del Equipo A',
+                'resultado_b': 'Resultado del Equipo B',
+                'campo_extra_a': 'Campo Extra A',
+                'campo_extra_b': 'Campo Extra B',
+                'categoria': 'Categoria'
+        }
+        widgets = {
+            'fecha': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
+            'hora': forms.TimeInput(attrs={'type': 'time'}),
+            'campo_extra_a': forms.Textarea(attrs={'rows': 3}),
+            'campo_extra_b': forms.Textarea(attrs={'rows': 3})
+        }
+
+    def __init__(self, *args, **kwargs):
+        id_torneo = kwargs.pop('id_torneo', None)
+        id_evento = kwargs.pop('id_evento', None)
+        super().__init__(*args, **kwargs)
+
+        if id_torneo:
+            self.fields['equipo_a'].queryset = Participante.objects.filter(torneo_id=id_torneo)
+            self.fields['equipo_b'].queryset = Participante.objects.filter(torneo_id=id_torneo)
+
+        if self.instance and self.instance.pk:
+            if self.instance.fecha:
+                self.fields['fecha'].initial = self.instance.fecha.strftime('%Y-%m-%d')
+
+    def clean(self):
+        cleaned_data = super().clean()
+        equipo_a = cleaned_data.get('equipo_a')
+        equipo_b = cleaned_data.get('equipo_b')
+
+        if equipo_a and equipo_b and equipo_a == equipo_b:
+            raise forms.ValidationError("Los equipos no pueden ser iguales.")
+
+        return cleaned_data
+
+
+
+        
+
+    
