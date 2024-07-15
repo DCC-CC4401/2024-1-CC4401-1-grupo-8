@@ -7,14 +7,16 @@
 
 <h1 style="text-align: center;">Editar Torneo</h1>
 <div style="display: flex; justify-content: center;">
-<form method="post">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <button class="btn btn-info" name="Register" type="submit">Guardar Cambios</button>
-</form>
-<form method="post" action="{% url 'eliminar_torneo' uuid_torneo %}">
-    {% csrf_token %}
-    <button class="btn btn-danger" name="Delete" type="submit">Eliminar Torneo</button>
-</form>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button class="btn btn-info" name="Register" type="submit">Guardar Cambios</button>
+    </form>
+</div>
+<div>
+    <form method="post" action="{% url 'eliminar_torneo' uuid_torneo %}">
+        {% csrf_token %}
+        <button class="btn btn-danger" name="Delete" type="submit">Eliminar Torneo</button>
+    </form>
 </div>
 {% endblock content %}
