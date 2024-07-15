@@ -1,6 +1,6 @@
 {% extends 'quienvaganando/base.html' %}
 
-{% block subtitle %}{{nombre}}{% endblock subtitle %}
+{% block subtitle %}Evento {{nombre_evento}} de torneo {{nombre_torneo}}{% endblock subtitle %}
 
 {% block content %}
 
@@ -26,6 +26,7 @@
 </head>
 
 <body>
+  <a href="{% url 'overview_torneo' uuid_torneo=uuid_torneo %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Volver a Torneo</a>
   <h2 style="font-family: 'DM Sans', sans-serif; text-align: center;" > {{ nombre_torneo }}: {{ nombre_evento }}</h2>
   <h5 style="text-align: center;">{{ descripcion }}</h5>
   {% if is_owner %}
@@ -37,24 +38,26 @@
     <div class="container">
       <div class="col-7" style="font-family: 'DM Sans', sans-serif;" style="display: flex">
         <h4 class="text-danger fs-3 ms-4 "  style="font-family: 'DM Sans', sans-serif;" > Tabla de puntajes</h4>
-        <table class="table">
-          <thead>
-            <tr class="table-danger">
-              <th scope="col" >Posición</th>
-              <th scope="col" >Equipo</th>
-              <th scope="col" >Puntaje</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for posicion in posiciones %}
-            <tr>
-              <td class="fs-5" >{{ posicion.posicion }}</td>
-              <td class="fs-5" >{{ posicion.nombre }}</td>
-              <td class="fs-5" >{{ posicion.puntaje }}</td>
-            </tr> 
-            {% endfor %}
-          </tbody>
-        </table>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr class="table-danger">
+                <th scope="col" >Posición</th>
+                <th scope="col" >Equipo</th>
+                <th scope="col" >Puntaje</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for posicion in posiciones %}
+              <tr>
+                <td class="fs-5" >{{ posicion.posicion }}</td>
+                <td class="fs-5" >{{ posicion.nombre }}</td>
+                <td class="fs-5" >{{ posicion.puntaje }}</td>
+              </tr> 
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
