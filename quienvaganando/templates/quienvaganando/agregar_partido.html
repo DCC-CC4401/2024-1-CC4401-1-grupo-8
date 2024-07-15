@@ -1,0 +1,15 @@
+{% extends 'quienvaganando/base.html' %}
+
+{% block subtitle %}Agregar partido{% endblock subtitle %}
+
+{% load crispy_forms_tags %}
+{% block content %}
+<a href="{% url 'overview_evento' uuid_torneo nombre_evento %}" class="btn btn-outline-dark volver"><i class="fas fa-arrow-left"></i> Lista de Torneos</a>
+<h2 style="text-align: center;">Agregar Partido</h2>
+<div style="display: flex; justify-content: center;">
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button class="btn btn-info" type="submit">Añadir</button>
+    </form>
+{% endblock content %}

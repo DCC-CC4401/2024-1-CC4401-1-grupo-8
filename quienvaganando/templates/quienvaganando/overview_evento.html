@@ -1,0 +1,201 @@
+{% extends 'quienvaganando/base.html' %}
+
+{% block subtitle %}Evento {{nombre_evento}} de torneo {{nombre_torneo}}{% endblock subtitle %}
+
+{% block content %}
+
+<head>
+  <style>
+    .container{
+      display: flex;
+      gap: 50px
+    }
+    .table-container{
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: auto;
+      max-height: 300px;
+    }
+    .eliminar-evento {
+      position: absolute;
+      top: 150px;
+      right: 20px;
+   }
+   .button-container {
+    top: 100px;
+    position: absolute;
+    right: 20px;
+    justify-content: flex-end;  
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    }
+    .volver {
+      position:absolute;
+      top: 100px;
+      left: 00px;
+    }
+    .oscuro{
+      background-color: rgb(94, 18, 18);
+    }
+  </style>
+</head>
+
+<body>
+  <a href="{% url 'overview_torneo' uuid_torneo=uuid_torneo %}" class="btn btn-outline-dark volver"><i class="fas fa-arrow-left"></i> Volver a Torneo</a>
+  {% if is_owner %}
+  <div class="button-container">
+    <button class="btn btn-info" onclick="window.location.href='{% url 'eliminar_evento' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}'">Eliminar Evento <i class="fas fa-trash-alt"></i></button>
+    <button class="btn btn-info" onclick="window.location.href='{% url 'editar_evento' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}'">Editar Evento <i class="fas fa-edit"></i></button>
+    <button class="btn btn-info" onclick="window.location.href='{% url 'agregar_partido' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}'">Agregar Partido <i class="fas fa-plus"></i></button>
+  </div>
+  {% endif %}
+
+  <h2 style="font-family: 'DM Sans', sans-serif; text-align: center;" > {{ nombre_torneo }}: {{ nombre_evento }}</h2>
+  <h5 style="text-align: center;">{{ descripcion }}</h5>
+
+  <div style="float:left">
+
+      
+      <!-- <a href="{% url 'eliminar_evento' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}" class="btn btn-danger eliminar-evento">Eliminar Evento <i class="fas fa-trash-alt"></i></a>
+      <a href="{% url 'editar_evento' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}" class="btn btn-danger eliminar-evento">Editar Evento <i class="fas fa-edit"></i></a>
+      <a href="{% url 'agregar_partido' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}" class="btn btn-danger eliminar-evento">Agregar Partido <i class="fas fa-plus"></i></a> -->
+    <!-- TABLA PUNTAJES -->
+    <div class="container">
+      <div class="col-7" style="font-family: 'DM Sans', sans-serif;" style="display: flex">
+        <h4 class="text-primary-emphasis fs-3 ms-4 "  style="font-family: 'DM Sans', sans-serif;" > Tabla de puntajes</h4>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr class="table-primary">
+                <th scope="col" >Posición</th>
+                <th scope="col" >Equipo</th>
+                <th scope="col" >Puntaje</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for posicion in posiciones %}
+              <tr>
+                <td class="fs-5" >{{ posicion.posicion }}</td>
+                <td class="fs-5" >{{ posicion.nombre }}</td>
+                <td class="fs-5" >{{ posicion.puntaje }}</td>
+              </tr> 
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Partidos Pasados -->
+    <!-- como una tabla mientras, después podríamos hacer algo más lindo -->
+    <div class="container">
+      
+      <div class="col-7" style="font-family: 'DM Sans', sans-serif;">
+        <h4 class="text-primary-emphasis fs-3 ms-4 scroll"  style="font-family: 'DM Sans', sans-serif;" > Partidos Pasados</h4>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr class="table-primary">
+                <th scope="col" >Fecha</th>
+                <th scope="col" >Categoría</th>
+                <th scope="col" ></th>
+                <th scope="col" >Resultado</th>
+                <th scope="col" ></th>    
+                {% if is_owner %}
+                <th scope="col" ></th>
+                <th scope="col" ></th>
+                {% endif %}            
+              </tr>
+            </thead>
+            <tbody>
+              {% for partido in partidos_pasados %}
+                <tr>
+                  <td class="fs-5" >{{ partido.fecha|date:"d/m/y" }}</td>
+                  <td class="fs-5" >{{ partido.categoria }}</td>
+                  <td class="fs-5" >{{ partido.nombre_equipo_a }}</td>
+                  <td class="fs-5" >{{ partido.resultado_a }} - {{partido.resultado_b}}</td>
+                  <td class="fs-5" >{{ partido.nombre_equipo_b }}</td>
+                  {% if is_owner %}
+                  <td class="fs-5" >
+                    <form action="{% url 'eliminar_partido' uuid_torneo nombre_evento partido.id %}" method="post">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-info btn-sm">
+                          <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </form>
+                  </td>
+                  <td class="fs-5" >
+                    <form action="{% url 'editar_partido' uuid_torneo nombre_evento partido.id %}" method="post">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-info btn-sm">
+                          <i class="fas fa-edit"></i>
+                      </button>
+                    </form>
+                  </td>
+                  {% endif %}
+                </tr> 
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+      </div>
+
+      <!-- Partidos Próximos -->
+
+      <div class="col-7" style="font-family: 'DM Sans', sans-serif;">
+        <h4 class="text-primary-emphasis fs-3 ms-4 scroll"  style="font-family: 'DM Sans', sans-serif;" > Partidos Próximos</h4>
+        <div class="table-container">      
+          <table class="table">
+            <thead>
+              <tr class="table-primary">
+                <th scope="col" >Fecha</th>
+                <th scope="col" >Hora</th>
+                <th scope="col" >Lugar</th>
+                <th scope="col" >Categoría</th>
+                <th scope="col" >Partido</th>
+                {% if is_owner %}
+                <th scope="col" ></th>
+                <th scope="col" ></th>
+                {% endif %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for partido in partidos_proximos %}
+              <tr>
+                <td class="fs-5" >{{ partido.fecha|date:"d/m/y" }}</td>
+                <td class="fs-5" >{{ partido.hora }}</td>
+                <td class="fs-5" >{{ partido.lugar }}</td>
+                <td class="fs-5" >{{ partido.categoria }}</td>
+                <td class="fs-5" >{{ partido.nombre_equipo_a }} vs. {{partido.nombre_equipo_b}}</td>
+                {% if is_owner %}
+                <td class="fs-5" >
+                  <form action="{% url 'eliminar_partido' uuid_torneo nombre_evento partido.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-info btn-sm">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </form>
+                </td>
+                <td class="fs-5" >
+                  <form action="{% url 'editar_partido' uuid_torneo nombre_evento partido.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-info btn-sm">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                  </form>
+                </td>
+                {% endif %}
+              </tr> 
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+{% endblock content %}

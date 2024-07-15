@@ -71,8 +71,8 @@ class Partido(models.Model):
     hora = models.TimeField(blank=True, null=True)
     lugar = models.CharField(blank=True, max_length=250)
     
-    resultado_a = models.CharField(blank=True, max_length=250)
-    resultado_b = models.CharField(blank=True, max_length=250)
+    resultado_a = models.CharField(blank=True, max_length=250,default="TBD")
+    resultado_b = models.CharField(blank=True, max_length=250,default="TBD")
     
     # opcional por si hay más de un participante
     campo_extra_a = models.CharField(blank=True, max_length=250)
@@ -80,3 +80,5 @@ class Partido(models.Model):
     
     # categoría (ej. final, primera ronda)
     categoria = models.CharField(blank=True, max_length=250)
+
+    def __str__(self): return f"{self.equipo_a.nombre} vs {self.equipo_b.nombre} - {self.evento.nombre}"

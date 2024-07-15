@@ -4,13 +4,16 @@
 
 {% block content %}
 
-<h2 style="font-family: 'DM Sans', sans-serif;" > {{  nombre}}</h2>
 
 <body>
+  
+  <a href="{% url 'torneos' %}" class="btn btn-outline-dark volver"><i class="fas fa-arrow-left"></i> Lista de Torneos</a>
+  <h2 style="font-family: 'DM Sans', sans-serif; text-align: center;" > {{  nombre}}</h2>
+
 
   <div class="row justify-content-md-center mt-3 mb-auto"> 
      
-    <h4 class="text-danger fs-3 ms-4 "  style="font-family: 'DM Sans', sans-serif;" > Tabla de puntajes</h4>
+    <h4 class="text-primary-emphasis fs-3 ms-4 "  style="font-family: 'DM Sans', sans-serif;" > Tabla de puntajes</h4>
 
   </div>
   <div class="container-fluid">
@@ -20,7 +23,7 @@
         
         <table class="table ">
           <thead>
-            <tr class="table-danger">
+            <tr class="table-primary">
               {% for head in header_tabla %}
               <th scope="col" >{{head}}</th>
               {% endfor %}
@@ -39,15 +42,19 @@
       </div>
       <div class="col-5 "  style="font-family: 'DM Sans', sans-serif;">
         <h4 class="fw-bold  text-danger fs-2"  >EVENTOS:</h4>
-        <ul>
+        <ul class="list-group" style="width: max-content;">
           {% for evento in eventos %}
-          <li class="fw-bold eventos" >{{evento}}</li>
+          <li class="list-group-item d-flex justify-content-between align-items-center;">
+            {{ evento }}
+            <button type="button" onclick="window.location.href='{% url 'overview_evento' uuid_torneo evento %}'" class="btn btn-info btn-sm">
+              <i class="fas fa-eye fa-xs"></i>
+            </button>
+        </li>
           {% endfor %}
         </ul>
       </div>
     </div>
   </div>
 </body>
-
 
 {% endblock content %}
