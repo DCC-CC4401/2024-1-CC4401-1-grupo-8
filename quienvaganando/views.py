@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from quienvaganando.models import *
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
@@ -166,7 +166,7 @@ def overview_torneo(request, uuid_torneo):
         for participante in participantes_vacios:
             datos_tabla.append([ultimo_lugar, participante, 0, 0, 0, 0])
 
-         # Obtener los eventos del torneo
+        # Obtener los eventos del torneo
         eventos_torneo = Evento.objects.filter(torneo=torneo)
 
         # Filtrar los partidos futuros y los de hoy en adelante
@@ -179,13 +179,45 @@ def overview_torneo(request, uuid_torneo):
                                                    nombre_equipo_a=F("equipo_a__nombre"),
                                                    nombre_equipo_b=F("equipo_b__nombre")).order_by("fecha", "hora")[:5]
         
-        
+        # verificar si el usuario es dueño del torneo, para mostrar botones de edición
+        es_dueno = (request.user.is_authenticated and request.user == torneo.owner)
+
         # Renderiza la plantilla overview_torneo.html, pasando los datos calculados y obtenidos de
         # las consultas
         return render(request, "quienvaganando/overview_torneo.html", {
-            "nombre": torneo.nombre,
+            "torneo": torneo,
             "eventos": nombres_eventos,
             "header_tabla": ["Pos.", "Equipo", "1°", "2°", "3°", "Ptje."],
             "datos_tabla": datos_tabla,
-            "proximos_partidos": partidos_proximos
+            "proximos_partidos": partidos_proximos,
+            "es_dueno": es_dueno
         })
+
+def editar_torneo(request, uuid_torneo):
+    
+    # Se obtiene el objeto torneo con la id uuid_torneo
+    torneo = Torneo.objects.get(uuid=uuid_torneo)
+    if request.method == "GET":
+        form = EditarTorneoForm(instance=torneo)
+        return render(request, "quienvaganando/editar_torneo.html", {"form": form, "uuid_torneo": uuid_torneo})
+    if request.method == "POST":    
+        form = EditarTorneoForm(request.POST, instance=torneo)
+        # Se revisa la validez del form.
+        # En caso de que lo sea, se obtiene el nuevo nombre y descripción para el torneo
+        # Se reemplazan los antiguos nombre y descripción
+        # Se guarda la información
+        if form.is_valid():
+            nuevo_nombre = form.cleaned_data['nombre']
+            nueva_descripcion = form.cleaned_data['descripcion']
+            torneo.nombre = nuevo_nombre
+            torneo.descripcion = nueva_descripcion
+            torneo.save()
+            return HttpResponseRedirect(f"/torneos/{uuid_torneo}")
+        return render(request, "quienvaganando/editar_torneo.html", {"form": form, "uuid_torneo": uuid_torneo})
+
+def eliminar_torneo(request, uuid_torneo):
+    torneo = Torneo.objects.get(uuid=uuid_torneo)
+    if request.method == "POST":
+        torneo.delete()
+        return redirect('/torneos/')  # Redirige a la lista de torneos después de la eliminación
+    return render(request, "quienvaganando/editar_torneo.html", {"form": EditarTorneoForm(instance=torneo)})

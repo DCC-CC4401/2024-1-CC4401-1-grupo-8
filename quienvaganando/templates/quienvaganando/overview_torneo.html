@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<h2 style="font-family: 'DM Sans', sans-serif;" > {{  nombre}}</h2>
+<h2 style="font-family: 'DM Sans', sans-serif;" > {{ torneo.nombre }}</h2>
 
 <body>
 
@@ -80,8 +80,16 @@
         </table>
       </div>
     </div>
-    
   </div>
+
+  {% if es_dueno %}
+  <div class="mt-3 mb-auto">
+
+    <a href="{%url 'editar_torneo' uuid_torneo=torneo.uuid %}" class="btn btn-primary">Editar Torneo</a>
+
+  </div>
+  {% endif %}
+
 </body>
 
 
