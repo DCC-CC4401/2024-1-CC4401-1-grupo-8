@@ -2,11 +2,13 @@
 
 {% block subtitle %}Agregar partido{% endblock subtitle %}
 
+{% load crispy_forms_tags %}
 {% block content %}
-    <h2>Agregar partido</h2>
+<h2 style="text-align: center;">Agregar Partido</h2>
+<div style="display: flex; justify-content: center;">
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Añadir</button>
+        {{ form|crispy }}
+        <button class="btn btn-info" type="submit">Añadir</button>
     </form>
 {% endblock content %}

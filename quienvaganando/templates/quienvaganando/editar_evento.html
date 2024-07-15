@@ -2,11 +2,13 @@
 
 {% block subtitle %}Editar Evento{% endblock subtitle %}
 
+{% load crispy_forms_tags %}
 {% block content %}
-    <h2>Editar Evento</h2>
+<h2 style="text-align: center;">Editar Evento</h2>
+<div style="display: flex; justify-content: center;">
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Guardar Cambios</button>
+        {{ form|crispy }}
+        <button class="btn btn-info" type="submit">Guardar Cambios</button>
     </form>
 {% endblock content %}
