@@ -175,29 +175,37 @@ class EditarPartidoForm(forms.ModelForm):
                 'categoria': 'Categoria'
         }
         widgets = {
-            'fecha': forms.DateInput(attrs={'type': 'date'}),
+            'fecha': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
             'hora': forms.TimeInput(attrs={'type': 'time'}),
             'campo_extra_a': forms.Textarea(attrs={'rows': 3}),
             'campo_extra_b': forms.Textarea(attrs={'rows': 3})
         }
+
     def __init__(self, *args, **kwargs):
         id_torneo = kwargs.pop('id_torneo', None)
         id_evento = kwargs.pop('id_evento', None)
         super().__init__(*args, **kwargs)
 
-        if id_torneo and id_evento:
-            self.fields['nombre_equipo_a'].queryset = Participante.objects.filter(torneo_id=id_torneo)
-            self.fields['nombre_equipo_b'].queryset = Participante.objects.filter(torneo_id=id_torneo)
+        if id_torneo:
+            self.fields['equipo_a'].queryset = Participante.objects.filter(torneo_id=id_torneo)
+            self.fields['equipo_b'].queryset = Participante.objects.filter(torneo_id=id_torneo)
+
+        if self.instance and self.instance.pk:
+            if self.instance.fecha:
+                self.fields['fecha'].initial = self.instance.fecha.strftime('%Y-%m-%d')
 
     def clean(self):
         cleaned_data = super().clean()
-        equipo_a = cleaned_data.get('nombre_equipo_a')
-        equipo_b = cleaned_data.get('nombre_equipo_b')
+        equipo_a = cleaned_data.get('equipo_a')
+        equipo_b = cleaned_data.get('equipo_b')
 
         if equipo_a and equipo_b and equipo_a == equipo_b:
             raise forms.ValidationError("Los equipos no pueden ser iguales.")
 
         return cleaned_data
+
+
+
         
 
     
