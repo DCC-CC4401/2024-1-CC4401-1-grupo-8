@@ -289,6 +289,6 @@ def eliminar_partido(request, uuid_torneo, nombre_evento, id_partido):
     if not (request.user.is_authenticated and request.user == torneo.owner):
         raise PermissionDenied
     partido.delete()
-    messages.succes(request, "Partido eliminado correctamente")
+    messages.success(request, "Partido eliminado correctamente")
     return redirect('overview_evento', uuid_torneo=uuid_torneo, nombre_evento=nombre_evento)
 
