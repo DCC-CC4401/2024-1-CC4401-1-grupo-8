@@ -281,7 +281,7 @@ def editar_partido(request, uuid_torneo, nombre_evento, uuid_partido):
     return render(request, 'quienvaganando/editar_partido.html', {'form': form})
 
 
-@login_requiered
+@login_required
 def eliminar_partido(request, uuid_torneo, nombre_evento, id_partido):
     torneo = Torneo.objects.get(uuid=uuid_torneo)
     evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
