@@ -225,7 +225,8 @@ def editar_participantes(request, uuid_torneo):
         return render(request,  "quienvaganando/editar_participantes.html", {
             "torneo": torneo,
             "form_editar": form_editar,
-            "form_eliminar": form_eliminar
+            "form_eliminar": form_eliminar,
+            "uuid_torneo": uuid_torneo
         })
     
     if request.method == "POST":
@@ -250,6 +251,7 @@ def editar_participantes(request, uuid_torneo):
         return render(request,  "quienvaganando/editar_participantes.html", {
             "form_editar": form_editar,
             "form_eliminar": form_eliminar,
+            "uuid_torneo": uuid_torneo
         })
 
 def editar_torneo(request, uuid_torneo):
@@ -307,7 +309,7 @@ def agregar_participante(request, uuid_torneo):
     
     if request.method == "GET":
         form = AgregarParticipanteForm(torneo)
-        return render(request,  "quienvaganando/agregar_participante.html", {"form": form})
+        return render(request,  "quienvaganando/agregar_participante.html", {"form": form, "uuid_torneo": uuid_torneo})
     
     if request.method == "POST":    
         form = AgregarParticipanteForm(torneo, request.POST)
@@ -321,7 +323,7 @@ def agregar_participante(request, uuid_torneo):
             )
             return HttpResponseRedirect(f"/torneos/{uuid_torneo}")
 
-        return render(request,  "quienvaganando/agregar_participante.html", {"form": form})
+        return render(request,  "quienvaganando/agregar_participante.html", {"form": form, "uuid_torneo": uuid_torneo})
 
 def agregar_evento(request, uuid_torneo):
 
@@ -335,7 +337,7 @@ def agregar_evento(request, uuid_torneo):
 
     if request.method == "GET":
         form = AgregarEventoForm(torneo)
-        return render(request, "quienvaganando/agregar_evento.html", {"form": form})
+        return render(request, "quienvaganando/agregar_evento.html", {"form": form, "uuid_torneo": uuid_torneo})
 
     if request.method == "POST":    
         form = AgregarEventoForm(torneo, request.POST)
@@ -351,7 +353,7 @@ def agregar_evento(request, uuid_torneo):
             )
             return HttpResponseRedirect(f"/torneos/{uuid_torneo}")
 
-        return render(request,  "quienvaganando/agregar_evento.html", {"form": form})
+        return render(request,  "quienvaganando/agregar_evento.html", {"form": form, "uuid_torneo": uuid_torneo})
 
     
 def overview_evento(request, uuid_torneo, nombre_evento):

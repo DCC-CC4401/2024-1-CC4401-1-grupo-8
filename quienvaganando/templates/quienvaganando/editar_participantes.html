@@ -4,7 +4,7 @@
 
 {% load crispy_forms_tags %}
 {% block content %}
-
+<a href="{% url 'overview_torneo' uuid_torneo %}" class="btn btn-outline-dark volver"><i class="fas fa-arrow-left"></i> Volver al Torneo</a>
 <head>
     <style>
     .alert {
@@ -16,8 +16,7 @@
   
   </head>
 
-<h2 style="font-family: 'DM Sans', sans-serif;" > {{ torneo.nombre }}</h2>
-<h4 style="text-align: center;">Editar Participantes</h4>
+  <h1 style="text-align: center;">Editar Participantes</h1>
 
 <h6>Modifica el nombre de los participantes que desees</h6>
 

@@ -4,7 +4,7 @@
 
 {% load crispy_forms_tags %}
 {% block content %}
-
+<a href="{% url 'overview_torneo' uuid_torneo %}" class="btn btn-outline-dark volver"><i class="fas fa-arrow-left"></i> Volver al Torneo</a>
 <h1 style="text-align: center;">Agregar Participante</h1>
 <div style="display: flex; justify-content: center;">
 <form method="post">
