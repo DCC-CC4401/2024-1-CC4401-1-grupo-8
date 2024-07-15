@@ -22,7 +22,7 @@
       right: 20px;
    }
    .button-container {
-    top: -35px;
+    top: -10px;
     position: relative;
     right: 20px;
     justify-content: flex-end;  
@@ -34,7 +34,7 @@
     .volver {
       position:relative;
       
-      left: 00px;
+      right: 720px;
     }
     .oscuro{
       background-color: rgb(94, 18, 18);
@@ -42,10 +42,14 @@
   </style>
 </head>
 
+
+
 <body>
-  <a href="{% url 'overview_torneo' uuid_torneo=uuid_torneo %}" class="btn btn-outline-dark volver"><i class="fas fa-arrow-left"></i> Volver a Torneo</a>
-  {% if is_owner %}
+   
+  
   <div class="button-container">
+    <a href="{% url 'overview_torneo' uuid_torneo=uuid_torneo %}" class="btn btn-outline-dark volver"><i class="fas fa-arrow-left"></i> Volver a Torneo</a>
+    {% if is_owner %}
     <button class="btn btn-info" onclick="window.location.href='{% url 'eliminar_evento' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}'">Eliminar Evento <i class="fas fa-trash-alt"></i></button>
     <button class="btn btn-info" onclick="window.location.href='{% url 'editar_evento' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}'">Editar Evento <i class="fas fa-edit"></i></button>
     <button class="btn btn-info" onclick="window.location.href='{% url 'agregar_partido' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}'">Agregar Partido <i class="fas fa-plus"></i></button>
