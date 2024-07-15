@@ -1,6 +1,6 @@
 from django import forms
 from .models import User
-from .models import Torneo, Participante, Partido
+from .models import Torneo, Evento, Participante, Partido
 from django.db.models import Q
 from django.contrib.auth import authenticate
 from django.forms import PasswordInput
@@ -87,6 +87,23 @@ class NuevoTorneoForm(forms.Form):
             if len(eventos) != len(descripcion_eventos):
                 raise forms.ValidationError("El número de eventos y descripciones debe coincidir.")
         return cleaned_data
+
+class AgregarEventoForm(forms.Form):
+    nombre = forms.CharField(max_length=250, label="Nombre")
+    descripcion = forms.CharField(required=False, label="Descripcion")
+
+    # inicialización para agregar el torneo actual como atributo
+    def __init__(self, torneo, *args, **kwargs):
+        super(AgregarEventoForm, self).__init__(*args, **kwargs)
+        self.torneo = torneo
+    
+    def clean_nombre(self):
+        nombre = self.cleaned_data.get("nombre")
+
+        # revisa que el participante a agregar no exista
+        if nombre.lower() in [e.nombre.lower() for e in Evento.objects.filter(torneo=self.torneo)]:
+            raise forms.ValidationError("Ya existe un evento con este nombre")
+        return nombre
     
 class AgregarParticipanteForm(forms.Form):
     

@@ -303,3 +303,33 @@ def agregar_participante(request, uuid_torneo):
             return HttpResponseRedirect(f"/torneos/{uuid_torneo}")
 
         return render(request,  "quienvaganando/agregar_participante.html", {"form": form})
+
+def agregar_evento(request, uuid_torneo):
+
+    # se obtiene el torneo y sus participantes
+    torneo = Torneo.objects.get(uuid=uuid_torneo)
+
+    # si el usuario no es dueño, entrega error
+    if not (request.user.is_authenticated and request.user == torneo.owner):
+        raise PermissionDenied
+
+
+    if request.method == "GET":
+        form = AgregarEventoForm(torneo)
+        return render(request, "quienvaganando/agregar_evento.html", {"form": form})
+
+    if request.method == "POST":    
+        form = AgregarEventoForm(torneo, request.POST)
+
+        # validar form y agregar evento
+        if form.is_valid():
+            nombre = form.cleaned_data.get("nombre")
+            descripcion = form.cleaned_data.get("descripcion")
+            Evento.objects.create(
+                nombre=nombre,
+                descripcion = descripcion,
+                torneo=torneo
+            )
+            return HttpResponseRedirect(f"/torneos/{uuid_torneo}")
+
+        return render(request,  "quienvaganando/agregar_evento.html", {"form": form})
