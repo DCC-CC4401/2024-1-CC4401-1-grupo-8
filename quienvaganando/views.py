@@ -204,6 +204,8 @@ def overview_evento(request, uuid_torneo, nombre_evento):
         prox2 = Partido.objects.filter(evento=evento.id).filter(fecha=date.today()).filter(hora__gte=datetime.now())
         partidos_proximos = (prox1|prox2).values("id", "fecha", "hora", "lugar", "categoria", nombre_equipo_a=F("equipo_a__nombre"),
                                                   nombre_equipo_b=F("equipo_b__nombre")).order_by("fecha", "hora")
+        
+        messages.info(request, "Pagina cargada correctamente")
     
         return render(request, "quienvaganando/overview_evento.html", {
             "nombre_torneo": torneo.nombre,
