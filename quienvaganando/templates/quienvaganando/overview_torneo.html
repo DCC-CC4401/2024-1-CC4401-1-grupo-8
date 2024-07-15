@@ -8,6 +8,10 @@
 
 <body>
 
+  <div>
+    {{ torneo.descripcion }}
+  </div>
+
   {% if es_dueno %}
   <div class="mt-3 mb-auto">
     <a href="{%url 'editar_torneo' uuid_torneo=torneo.uuid %}" class="btn btn-primary">Editar Torneo</a>
