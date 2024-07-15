@@ -6,7 +6,7 @@
     <p>¿Estás seguro de que deseas eliminar este evento?</p>
     <form method="post">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <button type="submit" class="btn btn-info">Eliminar</button>
         <a href="{% url 'overview_evento' evento.torneo.uuid evento.nombre %}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>

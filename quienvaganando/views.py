@@ -31,7 +31,7 @@ def register_user(request):
             User.objects.create_user(username=username, password=contraseña)
             login_user(request)
             # Redireccionar al home
-            messages.success("Usuario creado exitosamente.")
+            messages.success(request, "Usuario creado exitosamente.")
             return HttpResponseRedirect('/') # CAMBIAR RUTA
         else:
             # Si no pasa la validación, se devuelve el formulario con los datos
@@ -54,7 +54,7 @@ def login_user(request):
             usuario = authenticate(username=username,password=contraseña)
             login(request,usuario)
             # Si el formulario es válido, retornamos al home
-            messages.success("Hola, "+str(username)+"!")
+            messages.success(request, f"Hola, {username}!")
             return HttpResponseRedirect('/')
         else:
             # Si el usuario no es valido, se devuelve el formulario con los datos
@@ -112,7 +112,7 @@ def nuevo_torneo(request):
                     descripcion=descripcion,
                     torneo=torneo
                 )
-            messages.success("Torneo creado exitosamente.")
+            messages.success(request, "Torneo creado exitosamente.")
             return HttpResponseRedirect('/')
         else:
             return render(request, 'quienvaganando/torneo.html', {"form": form})
@@ -246,7 +246,7 @@ def editar_evento(request, uuid_torneo, nombre_evento):
     else:
         form = EditarEventoForm(instance=evento)
 
-    return render(request, 'quienvaganando/editar_evento.html', {'form': form})
+    return render(request, 'quienvaganando/editar_evento.html', {'form': form, "uuid_torneo": uuid_torneo, "nombre_evento":nombre_evento})
    
 @login_required
 def agregar_partido(request, uuid_torneo, nombre_evento):
@@ -255,7 +255,7 @@ def agregar_partido(request, uuid_torneo, nombre_evento):
     
     if request.method == 'GET':
         form = AgregarPartidoForm(torneo_id=torneo_id)
-        return render(request, "quienvaganando/agregar_partido.html", {"form": form})
+        return render(request, "quienvaganando/agregar_partido.html", {"form": form, "uuid_torneo": uuid_torneo, "nombre_evento":nombre_evento})
     
     elif request.method == 'POST':
         form = AgregarPartidoForm(request.POST, torneo_id=torneo_id)
@@ -265,13 +265,13 @@ def agregar_partido(request, uuid_torneo, nombre_evento):
             partido.save()
             return redirect('home')
         else:
-            return render(request, 'quienvaganando/agregar_partido.html', {"form": form})
+            return render(request, 'quienvaganando/agregar_partido.html', {"form": form, "uuid_torneo": uuid_torneo, "nombre_evento":nombre_evento})
         
 @login_required
-def editar_partido(request, uuid_torneo, nombre_evento, uuid_partido):
+def editar_partido(request, uuid_torneo, nombre_evento, id_partido):
     evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
     id_torneo = evento.torneo.id  # Asumiendo que Evento tiene una relación con Torneo
-    partido = get_object_or_404(Partido, uuid=uuid_partido)
+    partido = get_object_or_404(Partido, id=id_partido)
     ### 
     if request.method == 'POST':
         form = EditarPartidoForm(request.POST, instance=partido, id_torneo=id_torneo)
