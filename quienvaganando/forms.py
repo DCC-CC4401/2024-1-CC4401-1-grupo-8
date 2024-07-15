@@ -1,6 +1,7 @@
 from django import forms
 from .models import User
-from .models import Torneo
+from .models import Torneo, Partido
+from django.db.models import Q
 from django.contrib.auth import authenticate
 from django.forms import PasswordInput
 
@@ -86,6 +87,56 @@ class NuevoTorneoForm(forms.Form):
             if len(eventos) != len(descripcion_eventos):
                 raise forms.ValidationError("El número de eventos y descripciones debe coincidir.")
         return cleaned_data
+    
+class EditarParticipantesForm(forms.Form):
+    
+    # agrega campos dinámicos dependiendo de los participantes a editar
+    def __init__(self, participantes, *args, **kwargs):
+        
+        super(EditarParticipantesForm, self).__init__(*args, **kwargs)
+        
+        for p in participantes:
+            self.fields[p] = forms.CharField(max_length=250, label=p)
+            
+    def clean(self):
+        cleaned_data = super().clean()
+        participantes = cleaned_data.values()
+        
+        # revisar que no hayan participantes repetidos
+        participantes_comp = [p.lower() for p in participantes]
+        if len(participantes_comp) != len(set(participantes_comp)):
+            raise forms.ValidationError("Hay participantes repetidos")
+
+        return cleaned_data
+ 
+class EliminarParticipantesForm(forms.Form):
+    
+    # agrega campos dinámicos dependiendo de los participantes a eliiminar
+    def __init__(self, torneo, participantes, *args, **kwargs):
+        
+        super(EliminarParticipantesForm, self).__init__(*args, **kwargs)
+        self.torneo = torneo
+        
+        for p in participantes:
+            self.fields[p] = forms.BooleanField(required=False, label=f"¿Eliminar {p}?")
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        
+        # para poder eliminar elementos de cleaned data sin afectar la iteración
+        cleaned_data_iter = cleaned_data.copy()
+        
+        # si el equipo a eliminar tiene partidos, se envía un error
+        for nombre, eliminar in cleaned_data_iter.items():
+            existen_partidos = (
+                (Q(equipo_a__nombre = nombre) | Q(equipo_b__nombre = nombre))
+                & Q(evento__torneo=self.torneo)
+            )
+            if eliminar and Partido.objects.filter(existen_partidos).exists():
+                self.add_error(nombre, forms.ValidationError("No puedes eliminar un participante que tenga partidos"))
+                
+        return cleaned_data
+        
     
 class EditarTorneoForm(forms.ModelForm):
     class Meta:

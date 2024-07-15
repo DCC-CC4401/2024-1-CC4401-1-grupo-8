@@ -6,6 +6,7 @@ from quienvaganando.forms import *
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, F, Sum, Count, Window
 from django.db.models.functions import Rank
+from django.core.exceptions import PermissionDenied
 from datetime import date, datetime
 
 
@@ -188,9 +189,61 @@ def overview_torneo(request, uuid_torneo):
             "torneo": torneo,
             "eventos": nombres_eventos,
             "header_tabla": ["Pos.", "Equipo", "1°", "2°", "3°", "Ptje."],
-            "datos_tabla": datos_tabla,
             "proximos_partidos": partidos_proximos,
-            "es_dueno": es_dueno
+            "datos_tabla": datos_tabla,
+            "es_dueno": es_dueno,
+        })
+        
+def editar_participantes(request, uuid_torneo):
+    
+    # se obtiene el torneo y sus participantes
+    torneo = Torneo.objects.get(uuid=uuid_torneo)
+    
+    # si el usuario no es dueño, entrega error
+    if not (request.user.is_authenticated and request.user == torneo.owner):
+        raise PermissionDenied
+    
+    participantes = Participante.objects.filter(torneo=torneo)
+    nombres_participantes = [p.nombre for p in participantes]
+    
+    
+    if request.method == "GET":
+        # diccionario con nombres actuales (para que sean fácilmente editables en el form)
+        info_actual = dict(zip(
+            ["editar-" + nombre for nombre in nombres_participantes],
+            nombres_participantes
+        ))
+        
+        form_editar = EditarParticipantesForm(nombres_participantes, info_actual, prefix="editar")
+        form_eliminar = EliminarParticipantesForm(torneo, nombres_participantes, prefix="eliminar")
+        return render(request,  "quienvaganando/editar_participantes.html", {
+            "torneo": torneo,
+            "form_editar": form_editar,
+            "form_eliminar": form_eliminar
+        })
+    
+    if request.method == "POST":
+        form_editar = EditarParticipantesForm(nombres_participantes, request.POST, prefix="editar")
+        form_eliminar = EliminarParticipantesForm(torneo, nombres_participantes, request.POST, prefix="eliminar")
+        
+        # validar forms
+        if form_editar.is_valid() and form_eliminar.is_valid():
+            
+            # cambiar nombres de participantes
+            for p, nombre in zip(participantes, form_editar.cleaned_data.values()):
+                p.nombre = nombre
+                p.save()
+            
+            # eliminar participantes seleccionados
+            for p, eliminar in zip(participantes, form_eliminar.cleaned_data.values()):
+                if eliminar:
+                    p.delete()
+                
+            return HttpResponseRedirect(f"/torneos/{uuid_torneo}")
+        
+        return render(request,  "quienvaganando/editar_participantes.html", {
+            "form_editar": form_editar,
+            "form_eliminar": form_eliminar,
         })
 
 def editar_torneo(request, uuid_torneo):
