@@ -11,5 +11,5 @@ urlpatterns = [
     path('torneos/<str:uuid_torneo>/', views.overview_torneo, name='overview_torneo'),
     path('torneos/<str:uuid_torneo>/<str:nombre_evento>', views.overview_evento, name="overview_evento"),
     path('torneos/<str:uuid_torneo>/<str:nombre_evento>/eliminar/', views.eliminar_evento, name="eliminar_evento"),
-    path('torneos/<str:uuid_torneo>/<str:nombre_evento>/<str:id_partido>/eliminar/', views.eliminar_partido, name="eliminar_partido")
+    path('torneos/<str:uuid_torneo>/<str:nombre_evento>/<str:id_partido>/eliminar/', views.eliminar_partido, name="eliminar_partido"),
 ]
