@@ -274,3 +274,32 @@ def eliminar_torneo(request, uuid_torneo):
         torneo.delete()
         return redirect('/torneos/')  # Redirige a la lista de torneos después de la eliminación
     return render(request, "quienvaganando/editar_torneo.html", {"form": EditarTorneoForm(instance=torneo)})
+
+      
+def agregar_participante(request, uuid_torneo):
+    
+    # se obtiene el torneo y sus participantes
+    torneo = Torneo.objects.get(uuid=uuid_torneo)
+    
+    # si el usuario no es dueño, entrega error
+    if not (request.user.is_authenticated and request.user == torneo.owner):
+        raise PermissionDenied
+    
+    
+    if request.method == "GET":
+        form = AgregarParticipanteForm(torneo)
+        return render(request,  "quienvaganando/agregar_participante.html", {"form": form})
+    
+    if request.method == "POST":    
+        form = AgregarParticipanteForm(torneo, request.POST)
+        
+        # validar form y agregar participante
+        if form.is_valid():
+            nombre = form.cleaned_data.get("nombre")
+            Participante.objects.create(
+                nombre=nombre,
+                torneo=torneo
+            )
+            return HttpResponseRedirect(f"/torneos/{uuid_torneo}")
+
+        return render(request,  "quienvaganando/agregar_participante.html", {"form": form})
