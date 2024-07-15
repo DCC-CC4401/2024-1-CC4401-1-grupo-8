@@ -10,6 +10,7 @@ from datetime import date, datetime
 from django.utils import timezone
 from django.contrib import messages
 from django.urls import reverse
+from django.core.exceptions import PermissionDenied
 
 
 
@@ -194,14 +195,14 @@ def overview_evento(request, uuid_torneo, nombre_evento):
         # Query partidos pasados
         pas1 = Partido.objects.filter(evento=evento.id).filter(fecha__lt=date.today())
         pas2 = Partido.objects.filter(evento=evento.id).filter(fecha=date.today()).filter(hora__lt=datetime.now())
-        partidos_pasados = (pas1|pas2).values("fecha", "categoria", "resultado_a", "resultado_b", "campo_extra_a", "campo_extra_b",
+        partidos_pasados = (pas1|pas2).values("id", "fecha", "categoria", "resultado_a", "resultado_b", "campo_extra_a", "campo_extra_b",
                                           nombre_equipo_a=F("equipo_a__nombre"), nombre_equipo_b=F("equipo_b__nombre")).order_by("-fecha", "-hora")
         # print(partidos_pasados)
 
         # Query partidos proximos
         prox1 = Partido.objects.filter(evento=evento.id).filter(fecha__gt=date.today())
         prox2 = Partido.objects.filter(evento=evento.id).filter(fecha=date.today()).filter(hora__gte=datetime.now())
-        partidos_proximos = (prox1|prox2).values("fecha", "hora", "lugar", "categoria", nombre_equipo_a=F("equipo_a__nombre"),
+        partidos_proximos = (prox1|prox2).values("id", "fecha", "hora", "lugar", "categoria", nombre_equipo_a=F("equipo_a__nombre"),
                                                   nombre_equipo_b=F("equipo_b__nombre")).order_by("fecha", "hora")
     
         return render(request, "quienvaganando/overview_evento.html", {
@@ -216,8 +217,12 @@ def overview_evento(request, uuid_torneo, nombre_evento):
             "uuid_torneo": torneo.uuid
         })
 
+@login_required
 def eliminar_evento(request, uuid_torneo, nombre_evento):
     evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
+    torneo = Torneo.objects.get(uuid=uuid_torneo)
+    if not (request.user.is_authenticated and request.user == torneo.owner):
+        raise PermissionDenied
     if request.method == "POST":
         evento.delete()
         messages.success(request, "Evento eliminado correctamente")
@@ -240,10 +245,10 @@ def editar_evento(request, uuid_torneo, nombre_evento):
 
     return render(request, 'quienvaganando/editar_evento.html', {'form': form})
    
-
+@login_required
 def agregar_partido(request, uuid_torneo, nombre_evento):
     evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
-    torneo_id = evento.torneo.id  # Asumiendo que Evento tiene una relación con Torneo
+    torneo_id = evento.torneo.id
     
     if request.method == 'GET':
         form = AgregarPartidoForm(torneo_id=torneo_id)
@@ -255,7 +260,7 @@ def agregar_partido(request, uuid_torneo, nombre_evento):
             partido = form.save(commit=False)
             partido.evento = evento
             partido.save()
-            return redirect('home')  # Cambia 'home' por la vista adecuada
+            return redirect('home')
         else:
             return render(request, 'quienvaganando/agregar_partido.html', {"form": form})
         
@@ -274,4 +279,16 @@ def editar_partido(request, uuid_torneo, nombre_evento, uuid_partido):
         form = EditarPartidoForm(instance=partido, id_torneo=id_torneo)
     
     return render(request, 'quienvaganando/editar_partido.html', {'form': form})
+
+
+@login_requiered
+def eliminar_partido(request, uuid_torneo, nombre_evento, id_partido):
+    torneo = Torneo.objects.get(uuid=uuid_torneo)
+    evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
+    partido = get_object_or_404(Partido, id=id_partido, evento_id=evento.id)
+    if not (request.user.is_authenticated and request.user == torneo.owner):
+        raise PermissionDenied
+    partido.delete()
+    messages.succes(request, "Partido eliminado correctamente")
+    return redirect('overview_evento', uuid_torneo=uuid_torneo, nombre_evento=nombre_evento)
 
