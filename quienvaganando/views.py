@@ -251,6 +251,11 @@ def editar_torneo(request, uuid_torneo):
     
     # Se obtiene el objeto torneo con la id uuid_torneo
     torneo = Torneo.objects.get(uuid=uuid_torneo)
+    
+    # si el usuario no es dueño, entrega error
+    if not (request.user.is_authenticated and request.user == torneo.owner):
+        raise PermissionDenied
+    
     if request.method == "GET":
         form = EditarTorneoForm(instance=torneo)
         return render(request, "quienvaganando/editar_torneo.html", {"form": form, "uuid_torneo": uuid_torneo})
@@ -270,7 +275,13 @@ def editar_torneo(request, uuid_torneo):
         return render(request, "quienvaganando/editar_torneo.html", {"form": form, "uuid_torneo": uuid_torneo})
 
 def eliminar_torneo(request, uuid_torneo):
+    
     torneo = get_object_or_404(Torneo, uuid=uuid_torneo)
+    
+    # si el usuario no es dueño, entrega error
+    if not (request.user.is_authenticated and request.user == torneo.owner):
+        raise PermissionDenied
+    
     if request.method == "POST":
         torneo.delete()
         messages.success(request, "Torneo eliminado correctamente")
