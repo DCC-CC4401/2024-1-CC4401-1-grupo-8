@@ -226,8 +226,9 @@ def eliminar_evento(request, uuid_torneo, nombre_evento):
         return render(request, 'quienvaganando/eliminar_evento.html', {'evento': evento})
     
 @login_required
-def editar_evento(request, evento_id):
-    evento = get_object_or_404(Evento, id=evento_id)
+def editar_evento(request, uuid_torneo, nombre_evento):
+    evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
+    #evento = get_object_or_404(Evento, id=evento_id)
 
     if request.method == 'POST':
         form = EditarEventoForm(request.POST, instance=evento)
@@ -240,8 +241,8 @@ def editar_evento(request, evento_id):
     return render(request, 'quienvaganando/editar_evento.html', {'form': form})
    
 
-def agregar_partido(request, evento_id):
-    evento = get_object_or_404(Evento, id=evento_id)
+def agregar_partido(request, uuid_torneo, nombre_evento):
+    evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
     torneo_id = evento.torneo.id  # Asumiendo que Evento tiene una relación con Torneo
     
     if request.method == 'GET':
@@ -259,11 +260,11 @@ def agregar_partido(request, evento_id):
             return render(request, 'quienvaganando/agregar_partido.html', {"form": form})
         
 @login_required
-def editar_partido(request, id_torneo, id_evento, partido_id):
-    torneo = get_object_or_404(Torneo, id=id_torneo)
-    evento = get_object_or_404(Evento, id=id_evento, torneo=torneo)
-    partido = get_object_or_404(Partido, id=partido_id)
-
+def editar_partido(request, uuid_torneo, nombre_evento, uuid_partido):
+    evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
+    id_torneo = evento.torneo.id  # Asumiendo que Evento tiene una relación con Torneo
+    partido = get_object_or_404(Partido, uuid=uuid_partido)
+    ### 
     if request.method == 'POST':
         form = EditarPartidoForm(request.POST, instance=partido, id_torneo=id_torneo)
         if form.is_valid():
