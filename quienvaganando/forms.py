@@ -1,13 +1,9 @@
 from django import forms
 from .models import User
-from .models import Torneo
-from .models import Partido
-from .models import Evento
-from .models import Partido
-from .models import Participante
+from .models import Torneo, Evento, Participante, Partido
+from django.db.models import Q
 from django.contrib.auth import authenticate
 from django.forms import PasswordInput
-
 
 class RegisterForm(forms.Form):
     username = forms.CharField(label="Nombre de usuario")
@@ -52,8 +48,8 @@ class NuevoTorneoForm(forms.Form):
 
     def clean_nombre(self):
         nombre = self.cleaned_data["nombre"]
-        nombre_comp = nombre.lower()
         # Comparación case-insensitive
+        nombre_comp = nombre.lower()
         if Torneo.objects.filter(nombre__iexact=nombre_comp).exists():
             raise forms.ValidationError("¡Ya existe un torneo con este nombre!")   
         return nombre
@@ -91,6 +87,113 @@ class NuevoTorneoForm(forms.Form):
             if len(eventos) != len(descripcion_eventos):
                 raise forms.ValidationError("El número de eventos y descripciones debe coincidir.")
         return cleaned_data
+
+class AgregarEventoForm(forms.Form):
+    nombre = forms.CharField(max_length=250, label="Nombre")
+    descripcion = forms.CharField(required=False, label="Descripcion")
+
+    # inicialización para agregar el torneo actual como atributo
+    def __init__(self, torneo, *args, **kwargs):
+        super(AgregarEventoForm, self).__init__(*args, **kwargs)
+        self.torneo = torneo
+    
+    def clean_nombre(self):
+        nombre = self.cleaned_data.get("nombre")
+
+        # revisa que el participante a agregar no exista
+        if nombre.lower() in [e.nombre.lower() for e in Evento.objects.filter(torneo=self.torneo)]:
+            raise forms.ValidationError("Ya existe un evento con este nombre")
+        return nombre
+    
+class AgregarParticipanteForm(forms.Form):
+    
+    nombre = forms.CharField(max_length=250, label="Nombre")
+    
+    # inicialización para agregar el torneo actual como atributo
+    def __init__(self, torneo, *args, **kwargs):
+        super(AgregarParticipanteForm, self).__init__(*args, **kwargs)
+        self.torneo = torneo
+    
+    def clean_nombre(self):
+        
+        nombre = self.cleaned_data.get("nombre")
+        
+        # revisa que el participante a agregar no exista
+        if nombre.lower() in [p.nombre.lower() for p in Participante.objects.filter(torneo=self.torneo)]:
+            raise forms.ValidationError("Ya existe un participante con este nombre")
+
+        return nombre
+    
+class EditarParticipantesForm(forms.Form):
+    
+    # agrega campos dinámicos dependiendo de los participantes a editar
+    def __init__(self, participantes, *args, **kwargs):
+        
+        super(EditarParticipantesForm, self).__init__(*args, **kwargs)
+        
+        for p in participantes:
+            self.fields[p] = forms.CharField(max_length=250, label=p)
+            
+    def clean(self):
+        cleaned_data = super().clean()
+        participantes = cleaned_data.values()
+        
+        # revisar que no hayan participantes repetidos
+        participantes_comp = [p.lower() for p in participantes]
+        if len(participantes_comp) != len(set(participantes_comp)):
+            raise forms.ValidationError("Hay participantes repetidos")
+
+        return cleaned_data
+ 
+class EliminarParticipantesForm(forms.Form):
+    
+    # agrega campos dinámicos dependiendo de los participantes a eliiminar
+    def __init__(self, torneo, participantes, *args, **kwargs):
+        
+        super(EliminarParticipantesForm, self).__init__(*args, **kwargs)
+        self.torneo = torneo
+        
+        for p in participantes:
+            self.fields[p] = forms.BooleanField(required=False, label=f"¿Eliminar {p}?")
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        
+        # para poder eliminar elementos de cleaned data sin afectar la iteración
+        cleaned_data_iter = cleaned_data.copy()
+        
+        # si el equipo a eliminar tiene partidos, se envía un error
+        for nombre, eliminar in cleaned_data_iter.items():
+            existen_partidos = (
+                (Q(equipo_a__nombre = nombre) | Q(equipo_b__nombre = nombre))
+                & Q(evento__torneo=self.torneo)
+            )
+            if eliminar and Partido.objects.filter(existen_partidos).exists():
+                self.add_error(nombre, forms.ValidationError("No puedes eliminar un participante que tenga partidos"))
+                
+        return cleaned_data
+        
+    
+class EditarTorneoForm(forms.ModelForm):
+    class Meta:
+        model = Torneo
+        fields = ['nombre', 'descripcion']
+        widgets = {
+            'descripcion': forms.Textarea(attrs={'rows': 5})
+            }
+        help_texts = {
+            'nombre': "Nombre del Torneo", 
+            'descripcion': "Descripción del Torneo"
+            }
+
+        def clean_nombre(self):
+            nombre = self.cleaned_data["nombre"]
+            nombre_antiguo = self.instance.nombre.lower()
+            # Comparación case-insensitive
+            nombre_comp = nombre.lower()
+            if nombre_antiguo != nombre_comp and Torneo.objects.filter(nombre__iexact=nombre_comp).exists():
+                raise forms.ValidationError("¡Ya existe un torneo con este nombre!")   
+            return nombre
     
 class EditarEventoForm(forms.ModelForm):
     class Meta:

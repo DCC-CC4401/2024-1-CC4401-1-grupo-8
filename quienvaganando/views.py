@@ -172,17 +172,187 @@ def overview_torneo(request, uuid_torneo):
         ultimo_lugar = len(datos_tabla)+1
         for participante in participantes_vacios:
             datos_tabla.append([ultimo_lugar, participante, 0, 0, 0, 0])
+
+        # Obtener los eventos del torneo
+        eventos_torneo = Evento.objects.filter(torneo=torneo)
+
+        # Filtrar los partidos futuros y los de hoy en adelante
+        prox1 = Partido.objects.filter(evento__in=eventos_torneo).filter(fecha__gt=date.today())
+        prox2 = Partido.objects.filter(evento__in=eventos_torneo).filter(fecha=date.today()).filter(hora__gte=datetime.now().time())
         
+        # Combinar ambas consultas y ordenar los resultados
+        partidos_proximos = (prox1 | prox2).values("fecha", "hora", "lugar", "categoria",
+                                                   nombre_evento=F("evento__nombre"),
+                                                   nombre_equipo_a=F("equipo_a__nombre"),
+                                                   nombre_equipo_b=F("equipo_b__nombre")).order_by("fecha", "hora")[:5]
         
+        # verificar si el usuario es dueño del torneo, para mostrar botones de edición
+        es_dueno = (request.user.is_authenticated and request.user == torneo.owner)
+
         # Renderiza la plantilla overview_torneo.html, pasando los datos calculados y obtenidos de
         # las consultas
         return render(request, "quienvaganando/overview_torneo.html", {
-            "uuid_torneo": uuid_torneo,
-            "nombre": torneo.nombre,
+            "torneo": torneo,
             "eventos": nombres_eventos,
             "header_tabla": ["Pos.", "Equipo", "1°", "2°", "3°", "Ptje."],
-            "datos_tabla": datos_tabla
+            "proximos_partidos": partidos_proximos,
+            "datos_tabla": datos_tabla,
+            "es_dueno": es_dueno,
         })
+        
+def editar_participantes(request, uuid_torneo):
+    
+    # se obtiene el torneo y sus participantes
+    torneo = Torneo.objects.get(uuid=uuid_torneo)
+    
+    # si el usuario no es dueño, entrega error
+    if not (request.user.is_authenticated and request.user == torneo.owner):
+        raise PermissionDenied
+    
+    participantes = Participante.objects.filter(torneo=torneo)
+    nombres_participantes = [p.nombre for p in participantes]
+    
+    
+    if request.method == "GET":
+        # diccionario con nombres actuales (para que sean fácilmente editables en el form)
+        info_actual = dict(zip(
+            ["editar-" + nombre for nombre in nombres_participantes],
+            nombres_participantes
+        ))
+        
+        form_editar = EditarParticipantesForm(nombres_participantes, info_actual, prefix="editar")
+        form_eliminar = EliminarParticipantesForm(torneo, nombres_participantes, prefix="eliminar")
+        return render(request,  "quienvaganando/editar_participantes.html", {
+            "torneo": torneo,
+            "form_editar": form_editar,
+            "form_eliminar": form_eliminar
+        })
+    
+    if request.method == "POST":
+        form_editar = EditarParticipantesForm(nombres_participantes, request.POST, prefix="editar")
+        form_eliminar = EliminarParticipantesForm(torneo, nombres_participantes, request.POST, prefix="eliminar")
+        
+        # validar forms
+        if form_editar.is_valid() and form_eliminar.is_valid():
+            
+            # cambiar nombres de participantes
+            for p, nombre in zip(participantes, form_editar.cleaned_data.values()):
+                p.nombre = nombre
+                p.save()
+            
+            # eliminar participantes seleccionados
+            for p, eliminar in zip(participantes, form_eliminar.cleaned_data.values()):
+                if eliminar:
+                    p.delete()
+                
+            return HttpResponseRedirect(f"/torneos/{uuid_torneo}")
+        
+        return render(request,  "quienvaganando/editar_participantes.html", {
+            "form_editar": form_editar,
+            "form_eliminar": form_eliminar,
+        })
+
+def editar_torneo(request, uuid_torneo):
+    
+    # Se obtiene el objeto torneo con la id uuid_torneo
+    torneo = Torneo.objects.get(uuid=uuid_torneo)
+    
+    # si el usuario no es dueño, entrega error
+    if not (request.user.is_authenticated and request.user == torneo.owner):
+        raise PermissionDenied
+    
+    if request.method == "GET":
+        form = EditarTorneoForm(instance=torneo)
+        return render(request, "quienvaganando/editar_torneo.html", {"form": form, "uuid_torneo": uuid_torneo})
+    if request.method == "POST":    
+        form = EditarTorneoForm(request.POST, instance=torneo)
+        # Se revisa la validez del form.
+        # En caso de que lo sea, se obtiene el nuevo nombre y descripción para el torneo
+        # Se reemplazan los antiguos nombre y descripción
+        # Se guarda la información
+        if form.is_valid():
+            nuevo_nombre = form.cleaned_data['nombre']
+            nueva_descripcion = form.cleaned_data['descripcion']
+            torneo.nombre = nuevo_nombre
+            torneo.descripcion = nueva_descripcion
+            torneo.save()
+            return HttpResponseRedirect(f"/torneos/{uuid_torneo}")
+        return render(request, "quienvaganando/editar_torneo.html", {"form": form, "uuid_torneo": uuid_torneo})
+
+def eliminar_torneo(request, uuid_torneo):
+    
+    torneo = get_object_or_404(Torneo, uuid=uuid_torneo)
+    
+    # si el usuario no es dueño, entrega error
+    if not (request.user.is_authenticated and request.user == torneo.owner):
+        raise PermissionDenied
+    
+    if request.method == "POST":
+        torneo.delete()
+        messages.success(request, "Torneo eliminado correctamente")
+        return redirect('home')
+    else:
+        return render(request, 'quienvaganando/eliminar_torneo.html', {'torneo': torneo})
+
+      
+def agregar_participante(request, uuid_torneo):
+    
+    # se obtiene el torneo y sus participantes
+    torneo = Torneo.objects.get(uuid=uuid_torneo)
+    
+    # si el usuario no es dueño, entrega error
+    if not (request.user.is_authenticated and request.user == torneo.owner):
+        raise PermissionDenied
+    
+    
+    if request.method == "GET":
+        form = AgregarParticipanteForm(torneo)
+        return render(request,  "quienvaganando/agregar_participante.html", {"form": form})
+    
+    if request.method == "POST":    
+        form = AgregarParticipanteForm(torneo, request.POST)
+        
+        # validar form y agregar participante
+        if form.is_valid():
+            nombre = form.cleaned_data.get("nombre")
+            Participante.objects.create(
+                nombre=nombre,
+                torneo=torneo
+            )
+            return HttpResponseRedirect(f"/torneos/{uuid_torneo}")
+
+        return render(request,  "quienvaganando/agregar_participante.html", {"form": form})
+
+def agregar_evento(request, uuid_torneo):
+
+    # se obtiene el torneo y sus participantes
+    torneo = Torneo.objects.get(uuid=uuid_torneo)
+
+    # si el usuario no es dueño, entrega error
+    if not (request.user.is_authenticated and request.user == torneo.owner):
+        raise PermissionDenied
+
+
+    if request.method == "GET":
+        form = AgregarEventoForm(torneo)
+        return render(request, "quienvaganando/agregar_evento.html", {"form": form})
+
+    if request.method == "POST":    
+        form = AgregarEventoForm(torneo, request.POST)
+
+        # validar form y agregar evento
+        if form.is_valid():
+            nombre = form.cleaned_data.get("nombre")
+            descripcion = form.cleaned_data.get("descripcion")
+            Evento.objects.create(
+                nombre=nombre,
+                descripcion = descripcion,
+                torneo=torneo
+            )
+            return HttpResponseRedirect(f"/torneos/{uuid_torneo}")
+
+        return render(request,  "quienvaganando/agregar_evento.html", {"form": form})
+
     
 def overview_evento(request, uuid_torneo, nombre_evento):
     torneo = Torneo.objects.get(uuid=uuid_torneo)

@@ -1,14 +1,35 @@
 {% extends 'quienvaganando/base.html' %}
 
-{% block subtitle %}{{nombre}}{% endblock subtitle %}
+{% block subtitle %}{{ torneo.nombre }}{% endblock subtitle %}
 
 {% block content %}
 
+<a href="{% url 'torneos' %}" class="btn btn-outline-dark volver"><i class="fas fa-arrow-left"></i> Lista de Torneos</a>
+<h2 style="font-family: 'DM Sans', sans-serif;" > {{ torneo.nombre }}</h2>
 
 <body>
-  
-  <a href="{% url 'torneos' %}" class="btn btn-outline-dark volver"><i class="fas fa-arrow-left"></i> Lista de Torneos</a>
-  <h2 style="font-family: 'DM Sans', sans-serif; text-align: center;" > {{  nombre}}</h2>
+
+  <div>
+    {{ torneo.descripcion }}
+  </div>
+
+  {% if es_dueno %}
+  <div class="mt-3 mb-auto">
+    <a href="{%url 'editar_torneo' uuid_torneo=torneo.uuid %}" class="btn btn-primary">Editar Torneo</a>
+  </div>
+
+  <div class="mt-3 mb-auto">
+    <a href="{%url 'agregar_evento' uuid_torneo=torneo.uuid %}" class="btn btn-primary">Agregar Evento</a>
+  </div>
+
+  <div class="mt-3 mb-auto">
+    <a href="{%url 'agregar_participante' uuid_torneo=torneo.uuid %}" class="btn btn-primary">Agregar Participante</a>
+  </div>
+
+  <div class="mt-3 mb-auto"> 
+    <a href="{%url 'editar_participantes' uuid_torneo=torneo.uuid %}" class="btn btn-primary">Editar Participantes</a>
+  </div>
+  {% endif %}
 
 
   <div class="row justify-content-md-center mt-3 mb-auto"> 
@@ -46,7 +67,7 @@
           {% for evento in eventos %}
           <li class="list-group-item d-flex justify-content-between align-items-center;">
             {{ evento }}
-            <button type="button" onclick="window.location.href='{% url 'overview_evento' uuid_torneo evento %}'" class="btn btn-info btn-sm">
+            <button type="button" onclick="window.location.href='{% url 'overview_evento' torneo.uuid evento %}'" class="btn btn-info btn-sm">
               <i class="fas fa-eye fa-xs"></i>
             </button>
         </li>
@@ -54,7 +75,42 @@
         </ul>
       </div>
     </div>
+  
+    <div class="row mt-4">
+      <!-- Columna para los próximos partidos -->
+      <div class="col-12" style="font-family: 'DM Sans', sans-serif;">
+        <h4 class="text-danger fs-3" >Próximos 5 Partidos</h4>
+        
+        <table class="table ">
+          <thead>
+            <tr class="table-danger">
+              <th scope="col">Fecha</th>
+              <th scope="col">Hora</th>
+              <th scope="col">Evento</th>          
+              <th scope="col">Lugar</th>
+              <th scope="col">Categoría</th>
+              <th scope="col">Equipo A</th>
+              <th scope="col">Equipo B</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for partido in proximos_partidos %}
+            <tr>
+              <td class="fs-5">{{ partido.fecha }}</td>      
+              <td class="fs-5">{{ partido.hora }}</td>
+              <td class="fs-5">{{ partido.nombre_evento }}</td>
+              <td class="fs-5">{{ partido.lugar }}</td>
+              <td class="fs-5">{{ partido.categoria }}</td>
+              <td class="fs-5">{{ partido.nombre_equipo_a }}</td>
+              <td class="fs-5">{{ partido.nombre_equipo_b }}</td>
+            </tr> 
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
+
 </body>
 
 {% endblock content %}
