@@ -57,6 +57,7 @@
             <tr class="table-danger">
               <th scope="col">Fecha</th>
               <th scope="col">Hora</th>
+              <th scope="col">Evento</th>          
               <th scope="col">Lugar</th>
               <th scope="col">Categoría</th>
               <th scope="col">Equipo A</th>
@@ -66,8 +67,9 @@
           <tbody>
             {% for partido in proximos_partidos %}
             <tr>
-              <td class="fs-5">{{ partido.fecha }}</td>
+              <td class="fs-5">{{ partido.fecha }}</td>      
               <td class="fs-5">{{ partido.hora }}</td>
+              <td class="fs-5">{{ partido.nombre_evento }}</td>
               <td class="fs-5">{{ partido.lugar }}</td>
               <td class="fs-5">{{ partido.categoria }}</td>
               <td class="fs-5">{{ partido.nombre_equipo_a }}</td>

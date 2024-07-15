@@ -175,6 +175,7 @@ def overview_torneo(request, uuid_torneo):
         
         # Combinar ambas consultas y ordenar los resultados
         partidos_proximos = (prox1 | prox2).values("fecha", "hora", "lugar", "categoria",
+                                                   nombre_evento=F("evento__nombre"),
                                                    nombre_equipo_a=F("equipo_a__nombre"),
                                                    nombre_equipo_b=F("equipo_b__nombre")).order_by("fecha", "hora")[:5]
         
