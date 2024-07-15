@@ -1,0 +1,17 @@
+{% extends 'quienvaganando/base.html' %}
+
+{% block subtitle %}Agregar Evento{% endblock subtitle %}
+
+{% load crispy_forms_tags %}
+{% block content %}
+
+<h1 style="text-align: center;">Agregar Evento</h1>
+<div style="display: flex; justify-content: center;">
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button class="btn btn-info" name="Guardar" type="submit">Guardar Cambios</button>
+
+</form>
+</div>
+{% endblock content %}
