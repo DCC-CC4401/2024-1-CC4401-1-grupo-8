@@ -8,9 +8,15 @@
 <head>
     <style>
     .alert {
-        background-color: #f3a198;
-        color: black;
+        color: rgb(219, 33, 33);
+    }
+    .danger {
+        border-width: 2px;
+        border-style: solid;
+        border-radius: 25px;
+        border-color: rgb(219, 33, 33);
         padding: 10px;
+        margin-bottom: 10px;
     }
     </style>
   
@@ -18,20 +24,21 @@
 
   <h1 style="text-align: center;">Editar Participantes</h1>
 
-<h6>Modifica el nombre de los participantes que desees</h6>
+<p>
+    <h4 style="text-align: center;">Modifica el nombre de los participantes que desees</h4>
+</p>
 
-<div style="display: flex;">
+<div style="display: flex; justify-content: center;">
 <form method="post">
     {% csrf_token %}
     {{ form_editar.as_p }}
 
-    <div class="alert">
-        <p>¡ZONA DE PELIGRO!</p>
+    <div class="danger">
+        <h4 class="alert"><i class="fa-solid fa-triangle-exclamation"></i> ¡ZONA DE PELIGRO! </h4>
         {{ form_eliminar | crispy }}
     </div>
 
     <button class="btn btn-info" name="Guardar" type="submit">Guardar Cambios</button>
-
 </form>
 </div>
 {% endblock content %}
