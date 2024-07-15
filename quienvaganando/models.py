@@ -41,7 +41,7 @@ class Participante(models.Model):
     # Nombre del participante
     nombre = models.CharField(max_length=250)
     # Metodo para representar el objeto torneo como una cadena de texto, en este caso por su nombre y torneo asociado
-    def __str__(self): return f"{self.nombre} - {self.torneo}"
+    def __str__(self): return f"{self.nombre}"
 
 
 class Posicion(models.Model):

@@ -446,7 +446,7 @@ def agregar_partido(request, uuid_torneo, nombre_evento):
             partido = form.save(commit=False)
             partido.evento = evento
             partido.save()
-            return redirect('home')
+            return redirect('overview_evento', uuid_torneo=uuid_torneo, nombre_evento=nombre_evento)
         else:
             return render(request, 'quienvaganando/agregar_partido.html', {"form": form, "uuid_torneo": uuid_torneo, "nombre_evento":nombre_evento})
         
@@ -463,7 +463,7 @@ def editar_partido(request, uuid_torneo, nombre_evento, id_partido):
         form = EditarPartidoForm(request.POST, instance=partido, id_torneo=id_torneo)
         if form.is_valid():
             form.save()
-            return redirect('home')
+            return redirect('overview_evento', uuid_torneo=uuid_torneo, nombre_evento=nombre_evento)
     else:
         form = EditarPartidoForm(instance=partido, id_torneo=id_torneo)
     
