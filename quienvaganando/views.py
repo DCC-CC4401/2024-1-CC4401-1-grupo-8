@@ -31,6 +31,7 @@ def register_user(request):
             User.objects.create_user(username=username, password=contraseña)
             login_user(request)
             # Redireccionar al home
+            messages.success("Usuario creado exitosamente.")
             return HttpResponseRedirect('/') # CAMBIAR RUTA
         else:
             # Si no pasa la validación, se devuelve el formulario con los datos
@@ -53,6 +54,7 @@ def login_user(request):
             usuario = authenticate(username=username,password=contraseña)
             login(request,usuario)
             # Si el formulario es válido, retornamos al home
+            messages.success("Hola, "+str(username)+"!")
             return HttpResponseRedirect('/')
         else:
             # Si el usuario no es valido, se devuelve el formulario con los datos
@@ -110,7 +112,7 @@ def nuevo_torneo(request):
                     descripcion=descripcion,
                     torneo=torneo
                 )
-
+            messages.success("Torneo creado exitosamente.")
             return HttpResponseRedirect('/')
         else:
             return render(request, 'quienvaganando/torneo.html', {"form": form})
@@ -175,6 +177,7 @@ def overview_torneo(request, uuid_torneo):
         # Renderiza la plantilla overview_torneo.html, pasando los datos calculados y obtenidos de
         # las consultas
         return render(request, "quienvaganando/overview_torneo.html", {
+            "uuid_torneo": uuid_torneo,
             "nombre": torneo.nombre,
             "eventos": nombres_eventos,
             "header_tabla": ["Pos.", "Equipo", "1°", "2°", "3°", "Ptje."],
@@ -204,7 +207,7 @@ def overview_evento(request, uuid_torneo, nombre_evento):
         prox2 = Partido.objects.filter(evento=evento.id).filter(fecha=date.today()).filter(hora__gte=datetime.now())
         partidos_proximos = (prox1|prox2).values("id", "fecha", "hora", "lugar", "categoria", nombre_equipo_a=F("equipo_a__nombre"),
                                                   nombre_equipo_b=F("equipo_b__nombre")).order_by("fecha", "hora")
-    
+            
         return render(request, "quienvaganando/overview_evento.html", {
             "nombre_torneo": torneo.nombre,
             "nombre_evento": evento.nombre,
