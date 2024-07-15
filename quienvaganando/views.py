@@ -195,14 +195,14 @@ def overview_evento(request, uuid_torneo, nombre_evento):
         # Query partidos pasados
         pas1 = Partido.objects.filter(evento=evento.id).filter(fecha__lt=date.today())
         pas2 = Partido.objects.filter(evento=evento.id).filter(fecha=date.today()).filter(hora__lt=datetime.now())
-        partidos_pasados = (pas1|pas2).values("fecha", "categoria", "resultado_a", "resultado_b", "campo_extra_a", "campo_extra_b",
+        partidos_pasados = (pas1|pas2).values("id", "fecha", "categoria", "resultado_a", "resultado_b", "campo_extra_a", "campo_extra_b",
                                           nombre_equipo_a=F("equipo_a__nombre"), nombre_equipo_b=F("equipo_b__nombre")).order_by("-fecha", "-hora")
         # print(partidos_pasados)
 
         # Query partidos proximos
         prox1 = Partido.objects.filter(evento=evento.id).filter(fecha__gt=date.today())
         prox2 = Partido.objects.filter(evento=evento.id).filter(fecha=date.today()).filter(hora__gte=datetime.now())
-        partidos_proximos = (prox1|prox2).values("fecha", "hora", "lugar", "categoria", nombre_equipo_a=F("equipo_a__nombre"),
+        partidos_proximos = (prox1|prox2).values("id", "fecha", "hora", "lugar", "categoria", nombre_equipo_a=F("equipo_a__nombre"),
                                                   nombre_equipo_b=F("equipo_b__nombre")).order_by("fecha", "hora")
     
         return render(request, "quienvaganando/overview_evento.html", {
@@ -230,8 +230,11 @@ def eliminar_evento(request, uuid_torneo, nombre_evento):
         return render(request, 'quienvaganando/eliminar_evento.html', {'evento': evento})
    
 def eliminar_partido(request, uuid_torneo, nombre_evento, id_partido):
+    torneo = Torneo.objects.get(uuid=uuid_torneo)
     evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
     partido = get_object_or_404(Partido, id=id_partido, evento_id=evento.id)
+    if not (request.user.is_authenticated and request.user == torneo.owner):
+        raise PermissionDenied
     partido.delete()
     messages.succes(request, "Partido eliminado correctamente")
     return redirect('overview_evento', uuid_torneo=uuid_torneo, nombre_evento=nombre_evento)

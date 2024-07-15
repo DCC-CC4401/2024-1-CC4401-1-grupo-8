@@ -15,7 +15,7 @@
       width: 100%;
       overflow-x: auto;
       overflow-y: auto;
-      max-height: 500px;
+      max-height: 300px;
     }
     .eliminar-evento {
       position: absolute;
@@ -29,7 +29,7 @@
   <h2 style="font-family: 'DM Sans', sans-serif; text-align: center;" > {{ nombre_torneo }}: {{ nombre_evento }}</h2>
   <h5 style="text-align: center;">{{ descripcion }}</h5>
   {% if is_owner %}
-  <a href="{% url 'eliminar_evento' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}" class="btn btn-danger eliminar-evento">Eliminar Evento</a>
+  <a href="{% url 'eliminar_evento' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}" class="btn btn-danger eliminar-evento">Eliminar Evento <i class="fas fa-trash-alt"></i></a>
   {% endif %}
   <div style="float:left">
   
@@ -118,7 +118,8 @@
                 <td class="fs-5" >{{ partido.nombre_equipo_a }} vs. {{partido.nombre_equipo_b}}</td>
                 {% if is_owner %}
                 <td class="fs-5" >
-                  <form action="{% url 'eliminar_partido' uuid_torneo nombre_evento partido %}" method="post">
+                  <form action="{% url 'eliminar_partido' uuid_torneo nombre_evento partido.id %}" method="post">
+                    {% csrf_token %}
                     <button type="submit" class="btn btn-danger btn-sm">
                         <i class="fas fa-trash-alt"></i>
                     </button>
