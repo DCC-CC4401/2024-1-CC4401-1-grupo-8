@@ -13,10 +13,5 @@
         <button class="btn btn-info" name="Register" type="submit">Guardar Cambios</button>
     </form>
 </div>
-<div>
-    <form method="post" action="{% url 'eliminar_torneo' uuid_torneo %}">
-        {% csrf_token %}
-        <button class="btn btn-danger" name="Delete" type="submit">Eliminar Torneo</button>
-    </form>
-</div>
+<a href="{% url 'eliminar_torneo' uuid_torneo %}" class="btn btn-danger eliminar-torneo">Eliminar</a>
 {% endblock content %}

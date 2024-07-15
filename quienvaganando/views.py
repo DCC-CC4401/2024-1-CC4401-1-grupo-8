@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from quienvaganando.models import *
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
@@ -8,6 +8,7 @@ from django.db.models import Q, F, Sum, Count, Window
 from django.db.models.functions import Rank
 from django.core.exceptions import PermissionDenied
 from datetime import date, datetime
+from django.contrib import messages
 
 
 def register_user(request):
@@ -269,11 +270,13 @@ def editar_torneo(request, uuid_torneo):
         return render(request, "quienvaganando/editar_torneo.html", {"form": form, "uuid_torneo": uuid_torneo})
 
 def eliminar_torneo(request, uuid_torneo):
-    torneo = Torneo.objects.get(uuid=uuid_torneo)
+    torneo = get_object_or_404(Torneo, uuid=uuid_torneo)
     if request.method == "POST":
         torneo.delete()
-        return redirect('/torneos/')  # Redirige a la lista de torneos después de la eliminación
-    return render(request, "quienvaganando/editar_torneo.html", {"form": EditarTorneoForm(instance=torneo)})
+        messages.success(request, "Torneo eliminado correctamente")
+        return redirect('home')
+    else:
+        return render(request, 'quienvaganando/eliminar_torneo.html', {'torneo': torneo})
 
       
 def agregar_participante(request, uuid_torneo):
