@@ -307,8 +307,7 @@ class EditarPartidoForm(forms.ModelForm):
 
         return cleaned_data
 
-
-
-        
-
+class EditarPuntajesForm(forms.Form):
     
+    posicion = forms.IntegerField(min_value=1, required=False, label="Posición")
+    puntaje = forms.IntegerField(min_value=0, required=False, label="Puntaje")
