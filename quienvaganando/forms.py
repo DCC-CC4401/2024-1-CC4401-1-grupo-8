@@ -183,7 +183,6 @@ class EditarPartidoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         id_torneo = kwargs.pop('id_torneo', None)
-        id_evento = kwargs.pop('id_evento', None)
         super().__init__(*args, **kwargs)
 
         if id_torneo:
