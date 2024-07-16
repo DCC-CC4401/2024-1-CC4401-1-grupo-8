@@ -520,3 +520,56 @@ def editar_puntajes(request, uuid_torneo, nombre_evento):
             "nombre_evento": nombre_evento
         })
     
+    if request.method == "POST":
+        
+        # recolectar y validar forms
+        forms = []
+        for p in nombres_participantes:
+            form = EditarPuntajesForm(request.POST, prefix=p)
+            forms.append(form)
+        
+        if all([form.is_valid() for form in forms]):
+            
+            # editar puntajes para cada participante
+            for p, form in zip(participantes, forms):
+                
+                posicion_actual = form.cleaned_data
+                
+                print(posicion_actual)
+                print(form)
+                
+                # buscar si antes tenía posición
+                posicion_old = posiciones.filter(participante=p).first()
+                
+                if posicion_actual["posicion"] is None and posicion_actual["puntaje"] is None:
+                    
+                    # si ahora no tiene pero antes sí tenia, se borra
+                    if posicion_old is not None:
+                        posicion_old.delete()
+                
+                else:
+                    
+                    # si ahora tiene pero antes no tenía, se agrega
+                    if posicion_old is None:
+                        
+                        Posicion.objects.create(
+                            participante=p,
+                            evento=evento,
+                            posicion=posicion_actual["posicion"],
+                            puntaje=posicion_actual["puntaje"]
+                        )
+                        
+                    # si ahora tiene y antes igual, se actualiza
+                    else:
+                        
+                        posicion_old.posicion = posicion_actual["posicion"]
+                        posicion_old.puntaje = posicion_actual["puntaje"]
+                        posicion_old.save()
+                
+            return redirect('overview_evento', uuid_torneo=uuid_torneo, nombre_evento=nombre_evento)
+    
+        return render(request,  "quienvaganando/editar_puntajes.html", {
+            "form_info": dict(zip(nombres_participantes, forms)),
+            "uuid_torneo": uuid_torneo,
+            "nombre_evento": nombre_evento
+        })
