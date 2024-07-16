@@ -498,3 +498,25 @@ def editar_puntajes(request, uuid_torneo, nombre_evento):
     nombres_participantes = [p.nombre for p in participantes]
     posiciones = Posicion.objects.filter(evento=evento)
     
+    if request.method == "GET":
+        
+        # agregar form para cada participante
+        forms = []
+        for participante in participantes:
+            posicion = posiciones.filter(participante=participante).first()
+            
+            info_actual = {} if posicion is None else {
+                f"{participante.nombre}-posicion": posicion.posicion,
+                f"{participante.nombre}-puntaje": posicion.puntaje
+            }
+            
+            forms.append(EditarPuntajesForm(info_actual, prefix=participante.nombre))
+            
+        for form in forms: print(form)
+        
+        return render(request,  "quienvaganando/editar_puntajes.html", {
+            "form_info": dict(zip(nombres_participantes, forms)),
+            "uuid_torneo": uuid_torneo,
+            "nombre_evento": nombre_evento
+        })
+    
