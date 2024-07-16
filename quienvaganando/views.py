@@ -453,22 +453,27 @@ def agregar_partido(request, uuid_torneo, nombre_evento):
         
 @login_required
 def editar_partido(request, uuid_torneo, nombre_evento, id_partido):
-    torneo = Torneo.objects.get(uuid=uuid_torneo)
-    evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
-    id_torneo = evento.torneo.id  # Asumiendo que Evento tiene una relación con Torneo
-    partido = get_object_or_404(Partido, id=id_partido)
+    torneo = get_object_or_404(Torneo, uuid=uuid_torneo)
+    evento = get_object_or_404(Evento, torneo=torneo, nombre=nombre_evento)
+    partido = get_object_or_404(Partido, id=id_partido, evento=evento)
+
     if not (request.user.is_authenticated and request.user == torneo.owner):
         raise PermissionDenied
-    ### 
+    print(partido.__dict__)
     if request.method == 'POST':
-        form = EditarPartidoForm(request.POST, instance=partido, id_torneo=id_torneo)
+        form = EditarPartidoForm(instance=partido, id_torneo=torneo.id)
         if form.is_valid():
             form.save()
             return redirect('overview_evento', uuid_torneo=uuid_torneo, nombre_evento=nombre_evento)
     else:
-        form = EditarPartidoForm(instance=partido, id_torneo=id_torneo)
-    
-    return render(request, 'quienvaganando/editar_partido.html', {'form': form})
+        form = EditarPartidoForm(instance=partido, id_torneo=torneo.id)
+
+    return render(request, 'quienvaganando/editar_partido.html', {
+        'form': form,
+        'uuid_torneo': uuid_torneo,
+        'nombre_evento': nombre_evento,
+        'id_partido': id_partido
+    })
 
 
 @login_required

@@ -286,7 +286,6 @@ class EditarPartidoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         id_torneo = kwargs.pop('id_torneo', None)
-        id_evento = kwargs.pop('id_evento', None)
         super().__init__(*args, **kwargs)
 
         if id_torneo:
@@ -296,6 +295,8 @@ class EditarPartidoForm(forms.ModelForm):
         if self.instance and self.instance.pk:
             if self.instance.fecha:
                 self.fields['fecha'].initial = self.instance.fecha.strftime('%Y-%m-%d')
+            if self.instance.hora:
+                self.fields['hora'].initial = self.instance.hora.strftime('%H:%M')
 
     def clean(self):
         cleaned_data = super().clean()
