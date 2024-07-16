@@ -378,9 +378,11 @@ def overview_evento(request, uuid_torneo, nombre_evento):
         # Query partidos proximos
         prox1 = Partido.objects.filter(evento=evento.id).filter(fecha__gt=date.today())
         prox2 = Partido.objects.filter(evento=evento.id).filter(fecha=date.today()).filter(hora__gte=datetime.now())
-        sin_fecha = Partido.objects.filter(evento=evento.id).filter(fecha__isnull=True).values("id", "fecha", "hora", "lugar", "categoria", 
+        sin_fecha = Partido.objects.filter(evento=evento.id).filter(fecha__isnull=True).values("id", "fecha", "hora", "lugar", "categoria",
+                                                                                               "campo_extra_a", "campo_extra_b", 
                                                                                                nombre_equipo_a=F("equipo_a__nombre"), nombre_equipo_b=F("equipo_b__nombre"))
-        partidos_proximos1 = ((prox1|prox2).values("id", "fecha", "hora", "lugar", "categoria", nombre_equipo_a=F("equipo_a__nombre"),
+        partidos_proximos1 = ((prox1|prox2).values("id", "fecha", "hora", "lugar", "categoria", "campo_extra_a", "campo_extra_b",
+                                                   nombre_equipo_a=F("equipo_a__nombre"),
                                                   nombre_equipo_b=F("equipo_b__nombre")).order_by("fecha", "hora"))
         partidos_proximos = (partidos_proximos1|sin_fecha)
         
@@ -461,7 +463,8 @@ def editar_partido(request, uuid_torneo, nombre_evento, id_partido):
         raise PermissionDenied
     print(partido.__dict__)
     if request.method == 'POST':
-        form = EditarPartidoForm(instance=partido, id_torneo=torneo.id)
+        print("ola")
+        form = EditarPartidoForm(request.POST, instance=partido, id_torneo=torneo.id)
         if form.is_valid():
             form.save()
             return redirect('overview_evento', uuid_torneo=uuid_torneo, nombre_evento=nombre_evento)
