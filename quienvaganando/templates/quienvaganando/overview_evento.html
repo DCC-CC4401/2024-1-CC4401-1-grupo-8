@@ -42,8 +42,8 @@
     <button class="btn btn-info" onclick="window.location.href='{% url 'eliminar_evento' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}'">Eliminar Evento <i class="fas fa-trash-alt"></i></button>
     <button class="btn btn-info" onclick="window.location.href='{% url 'editar_evento' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}'">Editar Evento <i class="fas fa-edit"></i></button>
     <button class="btn btn-info" onclick="window.location.href='{% url 'agregar_partido' uuid_torneo=uuid_torneo nombre_evento=nombre_evento %}'">Agregar Partido <i class="fas fa-plus"></i></button>
-  </div>
   {% endif %}
+  </div>
 
   <h2 style="font-family: 'DM Sans', sans-serif; text-align: center; margin-top: 10px;">
     {{ nombre_torneo }}: {{ nombre_evento }}

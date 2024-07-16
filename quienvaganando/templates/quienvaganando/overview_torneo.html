@@ -41,8 +41,8 @@
     <button class="btn btn-info" onclick="window.location.href='{%url 'agregar_evento' uuid_torneo=torneo.uuid %}'">Agregar Evento <i class="fas fa-plus"></i></button>
     <button class="btn btn-info" onclick="window.location.href='{%url 'agregar_participante' uuid_torneo=torneo.uuid %}'">Agregar Participante <i class="fas fa-plus"></i></button>
     <button class="btn btn-info" onclick="window.location.href='{%url 'editar_participantes' uuid_torneo=torneo.uuid %}'">Editar Participantes <i class="fas fa-edit"></i></button>
-  </div>
   {% endif %}
+  </div>
   <h2 style="font-family: 'DM Sans', sans-serif; text-align: center; margin-top: 10px;">
     {{ torneo.nombre }}
   </h2>
