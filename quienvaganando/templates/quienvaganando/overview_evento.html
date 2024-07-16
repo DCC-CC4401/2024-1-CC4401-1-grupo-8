@@ -106,9 +106,17 @@
                 <tr>
                   <td class="fs-5" >{{ partido.fecha|date:"d/m/y" }}</td>
                   <td class="fs-5" >{{ partido.categoria }}</td>
-                  <td class="fs-5" >{{ partido.nombre_equipo_a }}</td>
+                  <td class="fs-5" >{{ partido.nombre_equipo_a }}
+                    {% if partido.campo_extra_a %}
+                      <div style="font-size: smaller;">({{ partido.campo_extra_a }})</div>
+                    {% endif %}
+                  </td>
                   <td class="fs-5" >{{ partido.resultado_a }} - {{partido.resultado_b}}</td>
-                  <td class="fs-5" >{{ partido.nombre_equipo_b }}</td>
+                  <td class="fs-5" >{{ partido.nombre_equipo_b }}
+                    {% if partido.campo_extra_b %}
+                    <div style="font-size: smaller;">({{ partido.campo_extra_b }})</div>
+                    {% endif %}
+                  </td>
                   {% if is_owner %}
                   <td class="fs-5" >
                     <form action="{% url 'eliminar_partido' uuid_torneo nombre_evento partido.id %}" method="post">
@@ -146,7 +154,9 @@
                 <th scope="col" >Hora</th>
                 <th scope="col" >Lugar</th>
                 <th scope="col" >Categoría</th>
+                <th scope="col" ></th>
                 <th scope="col" >Partido</th>
+                <th scope="col" ></th>
                 {% if is_owner %}
                 <th scope="col" ></th>
                 <th scope="col" ></th>
@@ -160,7 +170,18 @@
                 <td class="fs-5" >{{ partido.hora }}</td>
                 <td class="fs-5" >{{ partido.lugar }}</td>
                 <td class="fs-5" >{{ partido.categoria }}</td>
-                <td class="fs-5" >{{ partido.nombre_equipo_a }} vs. {{partido.nombre_equipo_b}}</td>
+                <td class="fs-5" >
+                  {{ partido.nombre_equipo_a }}
+                  {%if partido.campo_extra_a %}
+                    <div style="font-size: smaller;">({{ partido.campo_extra_a }})</div>
+                  {% endif %}
+                </td>
+                <td class="fs-5" >vs.</td>
+                <td class="fs-5" >
+                  {{partido.nombre_equipo_b}}
+                  {%if partido.campo_extra_b %}
+                    <div style="font-size: smaller;">({{ partido.campo_extra_b }})</div>
+                  {% endif %}</td>
                 {% if is_owner %}
                 <td class="fs-5" >
                   <form action="{% url 'eliminar_partido' uuid_torneo nombre_evento partido.id %}" method="post">
