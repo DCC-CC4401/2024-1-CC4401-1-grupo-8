@@ -1,0 +1,27 @@
+{% extends 'quienvaganando/base.html' %}
+
+{% block subtitle %}Editar Puntajes{% endblock subtitle %}
+
+{% load crispy_forms_tags %}
+{% block content %}
+<body>
+<a href="{% url 'overview_evento' uuid_torneo nombre_evento %}" class="btn btn-outline-dark volver"><i class="fas fa-arrow-left"></i> Volver al Evento</a>
+
+<h2 style="text-align: center;">Editar Puntajes</h2>
+
+<div style="display: flex; justify-content: center;">
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            {% for participante, form in form_info.items %}
+                <p>
+                    <div style="text-align: center; font-size: large;"><b>{{ participante }}</b></div>
+                    <div>
+                        {{form.as_p }}
+                    </div>
+                </p>
+            {% endfor %}
+        </div>
+        <button class="btn btn-info" type="submit">Guardar Cambios</button>
+    </form>
+{% endblock content %}
