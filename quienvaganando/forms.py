@@ -312,3 +312,16 @@ class EditarPuntajesForm(forms.Form):
     
     posicion = forms.IntegerField(min_value=1, required=False, label="Posición")
     puntaje = forms.IntegerField(min_value=0, required=False, label="Puntaje")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        posicion = cleaned_data.get('posicion')
+        puntaje = cleaned_data.get('puntaje')
+
+        if posicion is not None and puntaje is None:
+            raise forms.ValidationError("Toda posición debe tener un puntaje asociado.")
+
+        if puntaje is not None and posicion is None:
+            raise forms.ValidationError("Todo puntaje debe tener una posición asociada.")
+
+        return cleaned_data
