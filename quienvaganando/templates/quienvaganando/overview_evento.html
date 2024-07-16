@@ -167,7 +167,7 @@
               {% for partido in partidos_proximos %}
               <tr>
                 <td class="fs-5" >{{ partido.fecha|date:"d/m/y" }}</td>
-                <td class="fs-5" >{{ partido.hora }}</td>
+                <td class="fs-5" >{% if partido.hora %}{{ partido.hora }}{% endif %}</td>
                 <td class="fs-5" >{{ partido.lugar }}</td>
                 <td class="fs-5" >{{ partido.categoria }}</td>
                 <td class="fs-5" >
