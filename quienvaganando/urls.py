@@ -20,4 +20,5 @@ urlpatterns = [
     path('torneos/<str:uuid_torneo>/<str:nombre_evento>/editar/', views.editar_evento, name="editar_evento"),
     path('torneos/<str:uuid_torneo>/<str:nombre_evento>/agregar_partido/', views.agregar_partido, name="agregar_partido"),
     path('torneos/<str:uuid_torneo>/<str:nombre_evento>/<str:id_partido>/editar/', views.editar_partido, name="editar_partido"),
+    path('torneos/<str:uuid_torneo>/<str:nombre_evento>/editar_puntajes/', views.editar_puntajes, name="editar_puntajes"),
 ]
