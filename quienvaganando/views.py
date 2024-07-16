@@ -482,3 +482,19 @@ def eliminar_partido(request, uuid_torneo, nombre_evento, id_partido):
     messages.success(request, "Partido eliminado correctamente")
     return redirect('overview_evento', uuid_torneo=uuid_torneo, nombre_evento=nombre_evento)
 
+
+def editar_puntajes(request, uuid_torneo, nombre_evento):
+    
+    # se obtiene el evento actual
+    torneo = Torneo.objects.get(uuid=uuid_torneo)
+    evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
+    
+    # si el usuario no es dueño, entrega error
+    if not (request.user.is_authenticated and request.user == torneo.owner):
+        raise PermissionDenied
+    
+    # se obtienen todos los participantes y puntajes
+    participantes = Participante.objects.filter(torneo=torneo).order_by("nombre")
+    nombres_participantes = [p.nombre for p in participantes]
+    posiciones = Posicion.objects.filter(evento=evento)
+    
