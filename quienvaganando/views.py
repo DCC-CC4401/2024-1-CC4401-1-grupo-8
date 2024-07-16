@@ -169,8 +169,8 @@ def overview_torneo(request, uuid_torneo):
         )
         
         # Agregar participantes sin posicion a la tabla
-        ultimo_lugar = datos_tabla[-1][0]
-        if datos_tabla[-1][-1] != 0: ultimo_lugar += 1
+        ultimo_lugar = datos_tabla[-1][0] if datos_tabla else 1
+        if datos_tabla and datos_tabla[-1][-1] != 0: ultimo_lugar += 1
         for participante in participantes_vacios:
             datos_tabla.append([ultimo_lugar, participante, 0, 0, 0, 0])
 
