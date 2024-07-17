@@ -16,6 +16,12 @@
     overflow-y: auto;
     max-height: 350px;
   }
+  .table-container{
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 300px;
+  }
  .button-container {
   position: relative;
   right: 20px;
@@ -95,34 +101,34 @@
   
     <div class="row mt-4">
       <!-- Columna para los próximos partidos -->
-      <div class="col-12" style="font-family: 'DM Sans', sans-serif;">
-        <h4 class="text-primary-emphasis fs-3" >Próximos 5 Partidos</h4>
-        <table class="table ">
-          <thead>
-            <tr class="table-primary">
-              <th scope="col">Fecha</th>
-              <th scope="col">Hora</th>
-              <th scope="col">Evento</th>          
-              <th scope="col">Lugar</th>
-              <th scope="col">Categoría</th>
-              <th scope="col">Equipo A</th>
-              <th scope="col">Equipo B</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for partido in proximos_partidos %}
-            <tr>
-              <td class="fs-5">{{ partido.fecha }}</td>      
-              <td class="fs-5">{% if partido.hora %}{{ partido.hora }}{% endif %}</td>
-              <td class="fs-5">{{ partido.nombre_evento }}</td>
-              <td class="fs-5">{{ partido.lugar }}</td>
-              <td class="fs-5">{{ partido.categoria }}</td>
-              <td class="fs-5">{{ partido.nombre_equipo_a }}</td>
-              <td class="fs-5">{{ partido.nombre_equipo_b }}</td>
-            </tr> 
-            {% endfor %}
-          </tbody>
-        </table>
+      <div class="col-9" style="font-family: 'DM Sans', sans-serif;">
+        <h4 class="text-primary-emphasis fs-3" >Próximos Partidos</h4>
+        <div class="table-container">
+          <table class="table ">
+            <thead>
+              <tr class="table-primary">
+                <th scope="col">Fecha</th>
+                <th scope="col">Hora</th>
+                <th scope="col">Evento</th>
+                <th scope="col">Lugar</th>
+                <th scope="col">Categoría</th>
+                <th scope="col">Partido</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for partido in proximos_partidos %}
+              <tr>
+                <td class="fs-5">{{ partido.fecha }}</td>      
+                <td class="fs-5">{% if partido.hora %}{{ partido.hora }}{% endif %}</td>
+                <td class="fs-5">{{ partido.nombre_evento }}</td>
+                <td class="fs-5">{{ partido.lugar }}</td>
+                <td class="fs-5">{{ partido.categoria }}</td>
+                <td class="fs-5">{{ partido.nombre_equipo_a }} vs. {{ partido.nombre_equipo_b }}</td>
+              </tr> 
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
