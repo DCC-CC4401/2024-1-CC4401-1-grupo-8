@@ -44,7 +44,7 @@ class NuevoTorneoForm(forms.Form):
     nombre = forms.CharField(label="Nombre del Torneo", max_length=250)
     participantes = forms.CharField(widget=forms.Textarea(attrs={'rows':5}), help_text="Ingrese los nombres de los participantes separados por comas.")
     eventos = forms.CharField(widget=forms.Textarea(attrs={'rows':5}), help_text="Ingrese los nombres de los eventos separados por comas.")
-    descripcion_eventos = forms.CharField(widget=forms.Textarea(attrs={'rows': 5}), help_text="Ingrese las descripciones de los eventos en el mismo orden, separados por comas.")
+    descripcion_eventos = forms.CharField(widget=forms.Textarea(attrs={'rows': 5}), help_text="Ingrese las descripciones de los eventos en el mismo orden, separados por comas.", required=False, label="(Opcional) Descripción de los eventos")
 
     def clean_nombre(self):
         nombre = self.cleaned_data["nombre"]
@@ -83,7 +83,7 @@ class NuevoTorneoForm(forms.Form):
         eventos = cleaned_data.get("eventos")
         descripcion_eventos = cleaned_data.get("descripcion_eventos")
         # Ver que la cantidad de eventos y descripcones de eventos son iguales
-        if eventos is not None and descripcion_eventos is not None:
+        if eventos is not None and descripcion_eventos is not None and len(descripcion_eventos)!=0:
             if len(eventos) != len(descripcion_eventos):
                 raise forms.ValidationError("El número de eventos y descripciones debe coincidir.")
         return cleaned_data

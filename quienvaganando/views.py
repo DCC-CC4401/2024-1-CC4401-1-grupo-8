@@ -11,6 +11,7 @@ from django.utils import timezone
 from django.contrib import messages
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied
+from itertools import zip_longest
 
 
 
@@ -106,7 +107,7 @@ def nuevo_torneo(request):
                 )
 
             # Crear objetos Evento
-            for nombre_evento, descripcion in zip(eventos, descripcion_eventos):
+            for nombre_evento, descripcion in zip_longest(eventos, descripcion_eventos, fillvalue=""):
                 Evento.objects.create(
                     nombre=nombre_evento,
                     descripcion=descripcion,
