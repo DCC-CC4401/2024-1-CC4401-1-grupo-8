@@ -425,7 +425,7 @@ def editar_evento(request, uuid_torneo, nombre_evento):
         form = EditarEventoForm(request.POST, instance=evento)
         if form.is_valid():
             form.save()
-            return redirect('home')  # Redirige a la página principal o a donde desees
+            return redirect('overview_evento', uuid_torneo=uuid_torneo, nombre_evento=nombre_evento)
     else:
         form = EditarEventoForm(instance=evento)
 
