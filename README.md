@@ -70,4 +70,6 @@ $ python manage.py runserver
 
 Accediendo a `http://127.0.0.1:8000/`, la aplicación redirigirá al usuario a `http://127.0.0.1:8000/torneos`, la página principal donde se tiene la lista de torneos existentes. Una vez aquí, el usuario puede crear una cuenta nueva haciendo *click* en el botón "Iniciar sesión" y siguiendo las instrucciones del formulario; con una cuenta creada, el usuario puede hacer *click* en "Crear torneo" y rellenar la información pedida para armar su propia competición.
 
-Una vez creado el torneo, el usuario puede hacer *click* en él para ingresar a la página asociada al torneo. Observará que ningún usuario tiene puntajes asociados; esta funcionalidad se implementará en una versión futura. Para ver un ejemplo de cómo sería una tabla con información rellenada, el usuario puede cerrar sesión, iniciar sesión con la cuenta "testuser" y la contraseña "thisisatest", y entrar al torneo "The Monkey 2024" (no basado en ningún torneo de la facultad).
+Una vez creado el torneo, el usuario puede hacer *click* en él para ingresar a la página asociada al torneo. Desde aquí se puede editar el torneo, sus participantes, acceder a los eventos existentes y agregar nuevos. Además, dentro de la página de cada evento se pueden editar sus puntajes y partidos, además de ver su información existente.
+
+Para ver un ejemplo de cómo sería un torneo con información rellenada, el usuario puede cerrar sesión, iniciar sesión con la cuenta "testuser" y la contraseña "thisisatest", y entrar al torneo "The Monkey 2024" (no basado en ningún torneo de la facultad).
