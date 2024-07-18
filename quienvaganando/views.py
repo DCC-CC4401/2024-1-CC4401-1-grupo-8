@@ -400,7 +400,7 @@ def overview_evento(request, uuid_torneo, nombre_evento):
             "uuid_torneo": torneo.uuid
         })
 
-@login_required
+
 def eliminar_evento(request, uuid_torneo, nombre_evento):
     evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
     torneo = Torneo.objects.get(uuid=uuid_torneo)
@@ -413,7 +413,7 @@ def eliminar_evento(request, uuid_torneo, nombre_evento):
     else:
         return render(request, 'quienvaganando/eliminar_evento.html', {'evento': evento})
     
-@login_required
+
 def editar_evento(request, uuid_torneo, nombre_evento):
     evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
     torneo = Torneo.objects.get(uuid=uuid_torneo)
@@ -432,7 +432,7 @@ def editar_evento(request, uuid_torneo, nombre_evento):
 
     return render(request, 'quienvaganando/editar_evento.html', {'form': form, "uuid_torneo": uuid_torneo, "nombre_evento":nombre_evento})
    
-@login_required
+
 def agregar_partido(request, uuid_torneo, nombre_evento):
     evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
     torneo_id = evento.torneo.id
@@ -454,7 +454,7 @@ def agregar_partido(request, uuid_torneo, nombre_evento):
         else:
             return render(request, 'quienvaganando/agregar_partido.html', {"form": form, "uuid_torneo": uuid_torneo, "nombre_evento":nombre_evento})
         
-@login_required
+
 def editar_partido(request, uuid_torneo, nombre_evento, id_partido):
     torneo = get_object_or_404(Torneo, uuid=uuid_torneo)
     evento = get_object_or_404(Evento, torneo=torneo, nombre=nombre_evento)
@@ -480,7 +480,7 @@ def editar_partido(request, uuid_torneo, nombre_evento, id_partido):
     })
 
 
-@login_required
+
 def eliminar_partido(request, uuid_torneo, nombre_evento, id_partido):
     torneo = Torneo.objects.get(uuid=uuid_torneo)
     evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
