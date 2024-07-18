@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
         "password": "pbkdf2_sha256$260000$stmBpmX4Bt8Za71NHiEK6X$w+KWSIyoe4j0HYqGjlFEDxN8FKvmNJkthhvEIjx7pkk=",
-        "last_login": "2024-07-16T23:03:55.951Z",
+        "last_login": "2024-07-16T23:36:53.312Z",
         "is_superuser": true,
         "username": "admin",
         "first_name": "",
@@ -22,7 +22,7 @@
     "pk": 5,
     "fields": {
         "password": "pbkdf2_sha256$260000$h2hHixmnMuhi9CDxz747NT$h9OWVTPpIClOWGVzp9fMtc0lLlBY/9ouDvuAk9aqwMQ=",
-        "last_login": "2024-07-16T23:35:34.248Z",
+        "last_login": "2024-07-18T01:28:27.274Z",
         "is_superuser": false,
         "username": "testuser",
         "first_name": "",
@@ -111,7 +111,7 @@
     "pk": 24,
     "fields": {
         "torneo": 6,
-        "nombre": "Eléctrica"
+        "nombre": "DIE"
     }
 },
 {
@@ -375,11 +375,11 @@
         "equipo_a": 28,
         "equipo_b": 26,
         "evento": 11,
-        "fecha": "2024-08-01",
+        "fecha": "2024-07-18",
         "hora": "18:00:09",
         "lugar": "Cancha -3 851",
-        "resultado_a": "",
-        "resultado_b": "",
+        "resultado_a": "1 (1)",
+        "resultado_b": "(3) 1",
         "campo_extra_a": "",
         "campo_extra_b": "",
         "categoria": "Semifinal"
@@ -395,8 +395,8 @@
         "fecha": "2024-08-02",
         "hora": "12:00:00",
         "lugar": "Cancha 850",
-        "resultado_a": "TBD",
-        "resultado_b": "TBD",
+        "resultado_a": "",
+        "resultado_b": "",
         "campo_extra_a": "",
         "campo_extra_b": "",
         "categoria": "Semifinal"
