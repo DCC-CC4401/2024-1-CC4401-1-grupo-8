@@ -90,7 +90,7 @@ class NuevoTorneoForm(forms.Form):
 
 class AgregarEventoForm(forms.Form):
     nombre = forms.CharField(max_length=250, label="Nombre")
-    descripcion = forms.CharField(required=False, label="Descripcion")
+    descripcion = forms.CharField(required=False, label="Descripción")
 
     # inicialización para agregar el torneo actual como atributo
     def __init__(self, torneo, *args, **kwargs):
