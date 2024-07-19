@@ -402,12 +402,17 @@ def overview_evento(request, uuid_torneo, nombre_evento):
 
 
 def eliminar_evento(request, uuid_torneo, nombre_evento):
+    
+    # obtener evento y torneo
     evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
     torneo = Torneo.objects.get(uuid=uuid_torneo)
+    
+    # si no es dueño, error
     if not (request.user.is_authenticated and request.user == torneo.owner):
         raise PermissionDenied
+    
     if request.method == "POST":
-        evento.delete()
+        evento.delete()  # eliminar el evento
         messages.success(request, "Evento eliminado correctamente")
         return redirect('overview_torneo', uuid_torneo=uuid_torneo)
     else:
@@ -415,9 +420,12 @@ def eliminar_evento(request, uuid_torneo, nombre_evento):
     
 
 def editar_evento(request, uuid_torneo, nombre_evento):
+    
+    # obtener evento y torneo
     evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
     torneo = Torneo.objects.get(uuid=uuid_torneo)
-    #evento = get_object_or_404(Evento, id=evento_id)
+    
+    # si no es dueño, error
     if not (request.user.is_authenticated and request.user == torneo.owner):
         raise PermissionDenied
     
@@ -425,7 +433,7 @@ def editar_evento(request, uuid_torneo, nombre_evento):
     if request.method == 'POST':
         form = EditarEventoForm(request.POST, instance=evento)
         if form.is_valid():
-            form.save()
+            form.save()  # guarda la información nueva
             return redirect('overview_evento', uuid_torneo=uuid_torneo, nombre_evento=nombre_evento)
     else:
         form = EditarEventoForm(instance=evento)
@@ -434,9 +442,13 @@ def editar_evento(request, uuid_torneo, nombre_evento):
    
 
 def agregar_partido(request, uuid_torneo, nombre_evento):
+    
+    # obtener evento y torneo
     evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
     torneo_id = evento.torneo.id
     torneo = Torneo.objects.get(uuid=uuid_torneo)
+    
+    # si el usuario no es dueño, entregar error
     if not (request.user.is_authenticated and request.user == torneo.owner):
         raise PermissionDenied
     
@@ -446,6 +458,8 @@ def agregar_partido(request, uuid_torneo, nombre_evento):
     
     elif request.method == 'POST':
         form = AgregarPartidoForm(request.POST, torneo_id=torneo_id)
+        
+        # guarda la información del formulario
         if form.is_valid():
             partido = form.save(commit=False)
             partido.evento = evento
@@ -456,18 +470,21 @@ def agregar_partido(request, uuid_torneo, nombre_evento):
         
 
 def editar_partido(request, uuid_torneo, nombre_evento, id_partido):
+    
+    # obtener partido
     torneo = get_object_or_404(Torneo, uuid=uuid_torneo)
     evento = get_object_or_404(Evento, torneo=torneo, nombre=nombre_evento)
     partido = get_object_or_404(Partido, id=id_partido, evento=evento)
 
+    # si no es dueño, entregar error
     if not (request.user.is_authenticated and request.user == torneo.owner):
         raise PermissionDenied
-    print(partido.__dict__)
+
     if request.method == 'POST':
-        print("ola")
+
         form = EditarPartidoForm(request.POST, instance=partido, id_torneo=torneo.id)
         if form.is_valid():
-            form.save()
+            form.save()  # guardar el partido
             return redirect('overview_evento', uuid_torneo=uuid_torneo, nombre_evento=nombre_evento)
     else:
         form = EditarPartidoForm(instance=partido, id_torneo=torneo.id)
@@ -482,11 +499,17 @@ def editar_partido(request, uuid_torneo, nombre_evento, id_partido):
 
 
 def eliminar_partido(request, uuid_torneo, nombre_evento, id_partido):
+    
+    # obtener partido
     torneo = Torneo.objects.get(uuid=uuid_torneo)
     evento = get_object_or_404(Evento, torneo__uuid=uuid_torneo, nombre=nombre_evento)
     partido = get_object_or_404(Partido, id=id_partido, evento_id=evento.id)
+    
+    # si el usuario no es dueño, mostrar error
     if not (request.user.is_authenticated and request.user == torneo.owner):
         raise PermissionDenied
+    
+    # borrar el partido y retornar
     partido.delete()
     messages.success(request, "Partido eliminado correctamente")
     return redirect('overview_evento', uuid_torneo=uuid_torneo, nombre_evento=nombre_evento)
