@@ -173,7 +173,8 @@ class EliminarParticipantesForm(forms.Form):
                 
         return cleaned_data
         
-    
+
+# formulario para editar nombre y descripción del torneo
 class EditarTorneoForm(forms.ModelForm):
     class Meta:
         model = Torneo
@@ -194,7 +195,9 @@ class EditarTorneoForm(forms.ModelForm):
             if nombre_antiguo != nombre_comp and Torneo.objects.filter(nombre__iexact=nombre_comp).exists():
                 raise forms.ValidationError("¡Ya existe un torneo con este nombre!")   
             return nombre
-    
+
+
+# formulario para editar nombre y descripción de evento
 class EditarEventoForm(forms.ModelForm):
     class Meta:
         model = Evento
@@ -211,14 +214,14 @@ class EditarEventoForm(forms.ModelForm):
         evento_id = self.instance.id  
         torneo_id = self.instance.torneo.id  
         
-        
+        # chequea que no exista un evento con igual nombre en el torneo
         if Evento.objects.filter(nombre__iexact=nombre, torneo_id=torneo_id).exclude(id=evento_id).exists():
             raise forms.ValidationError("Ya existe un evento con este nombre en el mismo torneo.")
         
         return nombre
 
     
-
+# formulario para agregar un partido nuevo, con sus campos más importantes
 class AgregarPartidoForm(forms.ModelForm):
     class Meta:
         model = Partido
@@ -243,6 +246,7 @@ class AgregarPartidoForm(forms.ModelForm):
         torneo_id = kwargs.pop('torneo_id', None)
         super().__init__(*args, **kwargs)
         if torneo_id:
+            # obtiene los participantes actuales del torneo
             self.fields['equipo_a'].queryset = Participante.objects.filter(torneo_id=torneo_id)
             self.fields['equipo_b'].queryset = Participante.objects.filter(torneo_id=torneo_id)
         self.fields['categoria'].required = True
@@ -254,13 +258,14 @@ class AgregarPartidoForm(forms.ModelForm):
         cleaned_data = super().clean()
         equipo_a = cleaned_data.get('equipo_a')
         equipo_b = cleaned_data.get('equipo_b')
-
+        
+        # verifica que los equipos no sean iguales
         if equipo_a and equipo_b and equipo_a == equipo_b:
             raise forms.ValidationError("Los equipos no pueden ser iguales.")
 
         return cleaned_data
     
-    
+# formulario para editar partido, con toda su información
 class EditarPartidoForm(forms.ModelForm):   
     class Meta:
         model = Partido
@@ -308,6 +313,7 @@ class EditarPartidoForm(forms.ModelForm):
 
         return cleaned_data
 
+# formulario para editar posiciones y puntajes
 class EditarPuntajesForm(forms.Form):
     
     posicion = forms.IntegerField(min_value=1, required=False, label="Posición")
@@ -318,6 +324,8 @@ class EditarPuntajesForm(forms.Form):
         posicion = cleaned_data.get('posicion')
         puntaje = cleaned_data.get('puntaje')
 
+        # verifica que no hayan posiciones sin puntajes ni viceversa
+        
         if posicion is not None and puntaje is None:
             raise forms.ValidationError("Toda posición debe tener un puntaje asociado.")
 
