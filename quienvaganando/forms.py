@@ -253,17 +253,6 @@ class AgregarPartidoForm(forms.ModelForm):
         self.fields['fecha'].required = True
         self.fields['hora'].required = True
         self.fields['lugar'].required = True    
-
-    def clean(self):
-        cleaned_data = super().clean()
-        equipo_a = cleaned_data.get('equipo_a')
-        equipo_b = cleaned_data.get('equipo_b')
-        
-        # verifica que los equipos no sean iguales
-        if equipo_a and equipo_b and equipo_a == equipo_b:
-            raise forms.ValidationError("Los equipos no pueden ser iguales.")
-
-        return cleaned_data
     
 # formulario para editar partido, con toda su información
 class EditarPartidoForm(forms.ModelForm):   
@@ -302,16 +291,6 @@ class EditarPartidoForm(forms.ModelForm):
                 self.fields['fecha'].initial = self.instance.fecha.strftime('%Y-%m-%d')
             if self.instance.hora:
                 self.fields['hora'].initial = self.instance.hora.strftime('%H:%M')
-
-    def clean(self):
-        cleaned_data = super().clean()
-        equipo_a = cleaned_data.get('equipo_a')
-        equipo_b = cleaned_data.get('equipo_b')
-
-        if equipo_a and equipo_b and equipo_a == equipo_b:
-            raise forms.ValidationError("Los equipos no pueden ser iguales.")
-
-        return cleaned_data
 
 # formulario para editar posiciones y puntajes
 class EditarPuntajesForm(forms.Form):
